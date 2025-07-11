@@ -1,0 +1,19 @@
+@use '../../styles' as styles;
+
+mat-toolbar {
+  height: 6rem;
+  background: styles.$background-secondary;
+  display: flex;
+  flex-direction: row;
+  place-content: space-between;
+  div {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    place-content: space-between;
+    mat-icon {
+      scale: 2;
+    }
+  }
+}
+

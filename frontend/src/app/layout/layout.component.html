@@ -1,0 +1,11 @@
+<mat-toolbar style="position: sticky">
+  <span>Cecilia XD</span>
+  <div>
+    <mat-icon>person</mat-icon>
+    <h2 [matMenuTriggerFor]="menu">User Name</h2>
+    <mat-menu class="layout-menu" #menu="matMenu">
+      <button mat-menu-item><mat-icon>help</mat-icon>Ayuda</button>
+      <button mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

@@ -23,7 +23,22 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(expression =>
 {
     expression.AddProfile<ProductProfile>();
+    expression.AddProfile<IngredientProfile>();
+    expression.AddProfile<UserProfile>();
+    expression.AddProfile<ProductIngredientProfile>();
+    expression.AddProfile<InputProductProfile>();
+    expression.AddProfile<InputProfile>();
+    expression.AddProfile<InputIngredientProfile>();
+    expression.AddProfile<OutputProfile>();
+    expression.AddProfile<OutputProductProfile>();
+    expression.AddProfile<OutputIngredientProfile>();
+
+
+
+
 });
+
+
 var app = builder.Build();
 
 app.UseCors(policyBuilder =>

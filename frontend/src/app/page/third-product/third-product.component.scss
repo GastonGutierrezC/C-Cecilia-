@@ -1,0 +1,56 @@
+@use '../../../styles' as styles;
+
+
+.product-creation {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1rem;
+  gap: 1rem;
+}
+
+.products-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  h4 {
+    text-align: center;
+  }
+  div {
+    img {
+      width: 100%;
+      aspect-ratio: 1;
+    }
+  }
+}
+
+.searcher {
+  display: flex;
+  flex-direction: row;
+  place-content: center;
+  padding: 1rem;
+  * {
+    width: 90%;
+  }
+}
+.products-card {
+  background: styles.$secondary;
+}
+.table-products {
+  background: styles.$background;
+}
+
+.third-products-page {
+  padding: 1rem;
+}
+
+.upload-product-image-input {
+  display: none;
+}
+.button-actions {
+  display: flex;
+  flex-direction: row;
+  place-content: space-around;
+}

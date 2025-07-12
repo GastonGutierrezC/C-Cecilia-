@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>¿Estás seguro?</h2>
+<mat-dialog-content>
+  Esta accion es irreversible, quieres continuar?
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="dialogRef.close(false)">Cancelar</button>
+  <button mat-flat-button (click)="dialogRef.close(true)">Continuar</button>
+</mat-dialog-actions>

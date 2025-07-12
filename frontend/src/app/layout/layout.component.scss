@@ -1,7 +1,7 @@
 @use '../../styles' as styles;
 
 mat-toolbar {
-  height: 6rem;
+  height: 7vh;
   background: styles.$background-secondary;
   display: flex;
   flex-direction: row;
@@ -15,5 +15,9 @@ mat-toolbar {
       scale: 2;
     }
   }
+}
+
+.logo {
+  height: 7vh;
 }
 

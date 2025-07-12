@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Editando "{{data.name}}"</h2>
+<mat-dialog-content>
+  <div class="dialog-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput [formControl]="productForm.controls.name" maxlength="40">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Precio de compra</mat-label>
+      <input type="number" matInput [formControl]="productForm.controls.inPrice" >
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Precio de venta</mat-label>
+      <input type="number" matInput [formControl]="productForm.controls.sellPrice">
+    </mat-form-field>
+    <input #productUpload class="upload-product-image-input" type="file" accept=".png, .jpg" (change)="convertToBase64($event)"/>
+    <button mat-stroked-button (click)="productUpload.click()" matIconSuffix>Subir imagen<mat-icon>upload</mat-icon></button>
+    @if (image64) {
+      <small>imagen subida exitosamente</small>
+    }
+    <div>
+      <button mat-flat-button (click)="editProduct()">Editar Producto</button>
+    </div>
+  </div>
+
+</mat-dialog-content>

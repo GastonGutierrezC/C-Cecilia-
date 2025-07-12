@@ -1,0 +1,114 @@
+<div class="searcher">
+  <mat-form-field appearance="outline" >
+    <mat-label>Buscar por nombre</mat-label>
+    <input type="text" [formControl]="filterName" matInput (keyup)="filter()">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+</div>
+<div class="third-products-page">
+
+  <div class="button-actions">
+    <button mat-stroked-button (click)="onCreationMode = !onCreationMode">{{onCreationMode ? 'cerrar formulario de creación' : 'abrir formulario de creación'}}</button>
+  </div>
+
+  @if (onCreationMode) {
+    <div class="product-creation">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput [formControl]="productForm.controls.name" maxlength="40">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Precio de compra</mat-label>
+        <input type="number" matInput [formControl]="productForm.controls.inPrice" >
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Precio de venta</mat-label>
+        <input type="number" matInput [formControl]="productForm.controls.sellPrice">
+      </mat-form-field>
+      <input #productUpload class="upload-product-image-input" type="file" accept=".png, .jpg" (change)="convertToBase64($event)"/>
+      <button mat-stroked-button (click)="productUpload.click()" matIconSuffix>Subir imagen<mat-icon>upload</mat-icon></button>
+      @if (image64) {
+        <small>imagen subida exitosamente</small>
+      }
+      <div>
+        <button mat-flat-button (click)="createProduct()">Crear Producto</button>
+
+      </div>
+    </div>
+  }
+  <div class="button-actions">
+    <button mat-stroked-button (click)="tableView = !tableView">{{tableView ? 'cambiar a mosaico' : 'cambiar a tabla'}}</button>
+  </div>
+
+  @if (tableView) {
+    <div class="searcher">
+      <mat-form-field appearance="outline">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)"  #input>
+      </mat-form-field>
+    </div>
+    <div>
+      <table class="table-products" mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+          <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="inPrice">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio de entrada </th>
+          <td mat-cell *matCellDef="let row"> {{row.inPrice}} Bs</td>
+        </ng-container>
+        <ng-container matColumnDef="sellPrice">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio de salida </th>
+          <td mat-cell *matCellDef="let row"> {{row.sellPrice}} Bs </td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef > Eliminar </th>
+          <td mat-cell (click)="deleteProduct(row.id)" *matCellDef="let row"><mat-icon>delete</mat-icon></td>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef > Editar </th>
+          <td mat-cell (click)="editProduct(row)" *matCellDef="let row"><mat-icon>edit</mat-icon></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">No hay productos con: "{{input.value}}"</td>
+        </tr>
+      </table>
+      <mat-paginator class="table-products" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Selecciona pagina"></mat-paginator>
+    </div>
+
+  } @else {
+    <div class="products-div">
+      @if (products.length < 1) {
+        <h2>No hay productos de terceros creados aún</h2>
+      }
+      @for (product of filteredProducts; track $index) {
+        <mat-card  class="products-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{product.name}}
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div style="height: 20rem">
+              <img [src]="'data:image/png;base64,' + product.image" alt="product image">
+            </div>
+          </mat-card-content>
+          <mat-card-footer>
+            <h4>Precio de compra: {{product.inPrice}} Bs</h4>
+            <h4>Precio de venta: {{product.sellPrice}} Bs</h4>
+            <div class="button-actions">
+              <button mat-icon-button (click)="deleteProduct(product.id)"><mat-icon>delete</mat-icon></button>
+              <button mat-icon-button (click)="editProduct(product)"><mat-icon>edit</mat-icon></button>
+            </div>
+          </mat-card-footer>
+        </mat-card>
+      }
+    </div>
+
+  }
+
+</div>

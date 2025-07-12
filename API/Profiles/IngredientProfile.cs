@@ -15,6 +15,7 @@ public class IngredientProfile : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
             .ForMember(dest => dest.IngredientUnit, opt => opt.MapFrom(src => src.IngredientUnit))
-            .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice));
+            .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
+            .ForMember(dest => dest.SellPrice, opt => opt.MapFrom(src => src.SellPrice));
     }
 }

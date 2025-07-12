@@ -6,5 +6,6 @@ public class CreateProduct
     public required double InPrice { get; set; }
     public required double SellPrice { get; set; }
     public required string? Image { get; set; }
+    public required double Quantity { get; set; }
 
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(BreadContext))]
-    [Migration("20250710222201_Init")]
-    partial class Init
+    [Migration("20250712130136_AddInputUserTable")]
+    partial class AddInputUserTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,12 +63,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("InputDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Inputs");
                 });
@@ -125,6 +120,29 @@ namespace Infrastructure.Migrations
                     b.ToTable("InputProducts");
                 });
 
+            modelBuilder.Entity("Core.Entities.InputUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("InputId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InputId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("InputUsers");
+                });
+
             modelBuilder.Entity("Core.Entities.Output", b =>
                 {
                     b.Property<int>("Id")
@@ -136,12 +154,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("OutputDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Outputs");
                 });
@@ -271,17 +284,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Core.Entities.Input", b =>
-                {
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Core.Entities.InputIngredients", b =>
                 {
                     b.HasOne("Core.Entities.Ingredient", "Ingredient")
@@ -320,13 +322,21 @@ namespace Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Core.Entities.Output", b =>
+            modelBuilder.Entity("Core.Entities.InputUser", b =>
                 {
+                    b.HasOne("Core.Entities.Input", "Input")
+                        .WithMany()
+                        .HasForeignKey("InputId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Input");
 
                     b.Navigation("User");
                 });

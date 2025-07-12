@@ -11,34 +11,34 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class InputIngredientController(
-    IGenericRepository<InputIngredients> repository,
+public class InputUserController(
+    IGenericRepository<InputUser> repository,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<InputIngredients>>> Get()
+    public async Task<ActionResult<IEnumerable<InputUser>>> Get()
     {
         var list = await repository.ListAllAsync();
-        return Ok(list.Select(x => mapper.Map<InputIngredientResponse>(x)));
+        return Ok(list.Select(x => mapper.Map<InputUserResponse>(x)));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<InputIngredientResponse>> GetById(int id)
+    public async Task<ActionResult<InputUserResponse>> GetById(int id)
     {
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return NotFound();
-        return Ok(mapper.Map<InputIngredientResponse>(entity));
+        return Ok(mapper.Map<InputUserResponse>(entity));
     }
 
     [HttpPost]
-    public async Task<ActionResult<bool>> Create(CreateInputIngredient dto)
+    public async Task<ActionResult<bool>> Create(CreateInputUser dto)
     {
-        repository.AddAsync(mapper.Map<InputIngredients>(dto));
+        repository.AddAsync(mapper.Map<InputUser>(dto));
         return Ok(await repository.SaveChangesAsync());
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<bool>> Update(int id, UpdateInputIngredient dto)
+    public async Task<ActionResult<bool>> Update(int id, UpdateInputUser dto)
     {
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return NotFound();

@@ -13,7 +13,6 @@ public class InputProfile : Profile
         CreateMap<Input, InputResponse>();
         CreateMap<CreateInput, Input>();
         CreateMap<UpdateInput, Input>()
-            .ForMember(dest => dest.InputDate, opt => opt.MapFrom(src => src.InputDate))
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
+            .ForMember(dest => dest.InputDate, opt => opt.MapFrom(src => src.InputDate));
     }
 }

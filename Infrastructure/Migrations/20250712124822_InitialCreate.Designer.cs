@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(BreadContext))]
-    partial class BreadContextModelSnapshot : ModelSnapshot
+    [Migration("20250712124822_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,29 +120,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("InputProducts");
                 });
 
-            modelBuilder.Entity("Core.Entities.InputUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("InputId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InputId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("InputUsers");
-                });
-
             modelBuilder.Entity("Core.Entities.Output", b =>
                 {
                     b.Property<int>("Id")
@@ -208,29 +188,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("OutputProducts");
                 });
 
-            modelBuilder.Entity("Core.Entities.OutputUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OutputId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OutputId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("OutputUsers");
-                });
-
             modelBuilder.Entity("Core.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -248,9 +205,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
 
                     b.Property<double>("SellPrice")
                         .HasColumnType("float");
@@ -345,25 +299,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Core.Entities.InputUser", b =>
-                {
-                    b.HasOne("Core.Entities.Input", "Input")
-                        .WithMany()
-                        .HasForeignKey("InputId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Input");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Core.Entities.OutputIngredients", b =>
                 {
                     b.HasOne("Core.Entities.Ingredient", "Ingredient")
@@ -400,25 +335,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Output");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Core.Entities.OutputUser", b =>
-                {
-                    b.HasOne("Core.Entities.Output", "Output")
-                        .WithMany()
-                        .HasForeignKey("OutputId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Output");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Entities.ProductIngredients", b =>

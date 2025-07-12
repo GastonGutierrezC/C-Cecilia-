@@ -1,4 +1,4 @@
-// API/Controllers/InputController.cs
+
 using AutoMapper;
 using Core.DTOs.RequestDTOs;
 using Core.DTOs.ResponseDTOs;

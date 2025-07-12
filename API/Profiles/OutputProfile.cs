@@ -13,8 +13,6 @@ public class OutputProfile : Profile
         CreateMap<Output, OutputResponse>();
         CreateMap<CreateOutput, Output>();
         CreateMap<UpdateOutput, Output>()
-         .ForMember(dest => dest.OutputDate, opt => opt.MapFrom(src => src.OutputDate))
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
-
+         .ForMember(dest => dest.OutputDate, opt => opt.MapFrom(src => src.OutputDate));
     }
 }

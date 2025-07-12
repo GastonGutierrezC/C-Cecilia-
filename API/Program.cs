@@ -32,6 +32,8 @@ builder.Services.AddAutoMapper(expression =>
     expression.AddProfile<OutputProfile>();
     expression.AddProfile<OutputProductProfile>();
     expression.AddProfile<OutputIngredientProfile>();
+    expression.AddProfile<InputUserProfile>();
+    expression.AddProfile<OutputUserProfile>();
 
 
 

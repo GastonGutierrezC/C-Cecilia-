@@ -68,7 +68,7 @@ import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-th
 export class ThirdProductComponent implements OnInit, AfterViewInit{
   onCreationMode = false
   tableView = true
-  columns: string[] = ['name', 'inPrice', 'sellPrice', 'delete', 'edit']
+  columns: string[] = ['name', 'inPrice', 'sellPrice', 'quantity', 'delete', 'edit']
   dataSource: MatTableDataSource<ProductModel> = new MatTableDataSource<ProductModel>();
   productService = inject(ProductService)
   products:  ProductModel[] = [];
@@ -109,6 +109,9 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
       this.dataSource = new MatTableDataSource(products);
       this.products = products;
       this.filteredProducts = products;
+
+      this.dataSource.paginator = this.paginator()
+      this.dataSource.sort = this.sort()
     })
   }
   applyFilter(event: Event) {
@@ -146,13 +149,18 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
         name: this.productForm.value.name,
         inPrice: this.productForm.value.inPrice,
         sellPrice: this.productForm.value.sellPrice,
-        image: this.image64
+        image: this.image64,
+        quantity: 0
       }).subscribe(res => {
         this.productService.getProducts().subscribe(products => {
           this.products = products;
           this.fileName = undefined;
           this.image64 = undefined;
           this.filteredProducts = products;
+          this.dataSource = new MatTableDataSource(products)
+
+          this.dataSource.paginator = this.paginator()
+          this.dataSource.sort = this.sort()
         })
       })
     }
@@ -167,6 +175,8 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
             this.dataSource = new MatTableDataSource(products);
             this.products = products;
             this.filteredProducts = products;
+            this.dataSource.paginator = this.paginator()
+            this.dataSource.sort = this.sort()
           })
         })
       }
@@ -183,6 +193,8 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
             this.products = products;
             this.filteredProducts = products;
             this.dataSource = new MatTableDataSource(products);
+            this.dataSource.paginator = this.paginator()
+            this.dataSource.sort = this.sort()
           })
         }
       }

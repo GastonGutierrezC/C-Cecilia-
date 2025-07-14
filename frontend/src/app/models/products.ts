@@ -4,6 +4,7 @@ export interface ProductModel {
   inPrice: number;
   sellPrice: number;
   image: string;
+  quantity: number;
 }
 
 export interface ProductData {
@@ -11,4 +12,5 @@ export interface ProductData {
   inPrice: number;
   sellPrice: number;
   image: string;
+  quantity: number;
 }

@@ -1,7 +1,9 @@
 
 using API.Profiles;
+using API.Services;
 using AutoMapper;
 using Core.Interfaces;
+using Core.Interfaces.Services;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +19,8 @@ builder.Services.AddDbContext<BreadContext>(optionsBuilder =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IInputService, InputService>();
+
 
 builder.Services.AddAuthentication();
 builder.Services.AddControllers();
@@ -39,7 +43,6 @@ builder.Services.AddAutoMapper(expression =>
 
 
 });
-
 
 var app = builder.Build();
 

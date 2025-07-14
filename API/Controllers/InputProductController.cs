@@ -4,6 +4,7 @@ using Core.DTOs.RequestDTOs;
 using Core.DTOs.ResponseDTOs;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Interfaces.Services;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,7 @@ namespace API.Controllers;
 [Route("[controller]")]
 public class InputProductController(
     IGenericRepository<InputProducts> repository,
-    IMapper mapper) : ControllerBase
+    IMapper mapper, IInputService _inputService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InputProducts>>> GetAll()
@@ -31,10 +32,17 @@ public class InputProductController(
     }
 
     [HttpPost]
-    public async Task<ActionResult<bool>> Create(CreateInputProduct dto)
+    public async Task<ActionResult<bool>> Create(AutoInputProduct dto, int userId)
     {
-        repository.AddAsync(mapper.Map<InputProducts>(dto));
-        return Ok(await repository.SaveChangesAsync());
+        try
+        {
+            bool result = await _inputService.RegisterInputProductoAsync(dto, userId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]

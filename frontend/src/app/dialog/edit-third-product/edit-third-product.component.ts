@@ -9,7 +9,7 @@ import {
 } from "@angular/material/dialog";
 import {ProductService} from '../../service/product-service';
 import {ProductModel} from '../../models/products';
-import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
+import {MatError, MatFormField, MatHint, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ResizeImageDialogComponent} from '../resize-image-dialog/resize-image-dialog.component';
 import {MatIcon} from '@angular/material/icon';
@@ -27,7 +27,9 @@ import {MatIcon} from '@angular/material/icon';
     MatFormField,
     ReactiveFormsModule,
     MatSuffix,
-    MatIcon
+    MatIcon,
+    MatError,
+    MatHint
   ],
   templateUrl: './edit-third-product.component.html',
   styleUrl: './edit-third-product.component.scss'
@@ -40,8 +42,8 @@ export class EditThirdProductComponent implements OnInit{
   productService = inject(ProductService)
   productForm = new FormGroup({
     name: new FormControl(this.data.name, [Validators.required]),
-    inPrice: new FormControl(this.data.inPrice, [Validators.required]),
-    sellPrice: new FormControl(this.data.sellPrice, [Validators.required]),
+    inPrice: new FormControl(this.data.inPrice, [Validators.required, Validators.min(0)]),
+    sellPrice: new FormControl(this.data.sellPrice, [Validators.required, Validators.min(0)]),
   })
 
   ngOnInit() {

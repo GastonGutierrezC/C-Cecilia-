@@ -2,7 +2,7 @@ import {AfterViewInit, Component, inject, OnInit, signal, viewChild} from '@angu
 import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {ProductService} from '../../service/product-service';
 import {ProductModel} from '../../models/products';
-import {MatFormField, MatInput, MatLabel, MatPrefix, MatSuffix} from '@angular/material/input';
+import {MatError, MatFormField, MatHint, MatInput, MatLabel, MatPrefix, MatSuffix} from '@angular/material/input';
 import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -60,7 +60,9 @@ import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-th
     MatRowDef,
     MatMenu,
     MatMenuItem,
-    MatMenuTrigger
+    MatMenuTrigger,
+    MatError,
+    MatHint
   ],
   templateUrl: './third-product.component.html',
   styleUrl: './third-product.component.scss'
@@ -79,8 +81,8 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
   readonly dialog = inject(MatDialog);
   productForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    inPrice: new FormControl(0, [Validators.required]),
-    sellPrice: new FormControl(0, [Validators.required]),
+    inPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
+    sellPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
   })
 
 

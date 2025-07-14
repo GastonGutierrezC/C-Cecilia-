@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButton} from "@angular/material/button";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef, MatDialogTitle} from "@angular/material/dialog";
-import {MatFormField, MatInput, MatLabel, MatSuffix} from "@angular/material/input";
+import {MatError, MatFormField, MatHint, MatInput, MatLabel, MatSuffix} from "@angular/material/input";
 import {ProductModel} from '../../models/products';
 import {ProductService} from '../../service/product-service';
 import {MatIcon} from '@angular/material/icon';
@@ -21,7 +21,9 @@ import {IngredientModel} from '../../models/ingredient';
     MatInput,
     MatLabel,
     MatSuffix,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatError,
+    MatHint
   ],
   templateUrl: './edit-ingredient.component.html',
   styleUrl: './edit-ingredient.component.scss'
@@ -33,8 +35,8 @@ export class EditIngredientComponent{
   ingredientForm = new FormGroup({
     name: new FormControl(this.data.name, [Validators.required]),
     ingredientUnit: new FormControl(this.data.ingredientUnit, [Validators.required]),
-    unitPrice: new FormControl(this.data.unitPrice, [Validators.required]),
-    sellPrice: new FormControl(this.data.unitPrice, [Validators.required]),
+    unitPrice: new FormControl(this.data.unitPrice, [Validators.required, Validators.min(0)]),
+    sellPrice: new FormControl(this.data.unitPrice, [Validators.required, Validators.min(0)]),
   })
   editProduct() {
     if (this.ingredientForm.valid

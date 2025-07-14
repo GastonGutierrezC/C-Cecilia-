@@ -13,6 +13,7 @@
 .products-div {
   display: flex;
   flex-direction: row;
+  place-content:  center;
   flex-wrap: wrap;
   gap: 1rem;
   h4 {
@@ -30,16 +31,28 @@
   display: flex;
   flex-direction: row;
   place-content: center;
-  padding: 1rem;
+  padding: 1rem 0;
   * {
     width: 90%;
   }
 }
 .products-card {
+  padding: 1rem 0;
   background: styles.$secondary;
 }
+
+.image-container {
+  min-height: 18rem;
+  max-height: 18rem;
+  scale: 1;
+  img {
+    min-height: 18rem;
+    max-height: 18rem;
+    scale: 1;
+  }
+}
 .table-products {
-  background: styles.$background;
+  background: styles.$secondary;
   .mat-mdc-table-sticky-border-elem-left {
     border-right: 1px solid black;
   }

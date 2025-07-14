@@ -11,7 +11,7 @@ import {
   MatHeaderRowDef,
   MatRow, MatRowDef, MatTable, MatTableDataSource
 } from '@angular/material/table';
-import {MatFormField, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
+import {MatError, MatFormField, MatHint, MatInput, MatLabel, MatSuffix} from '@angular/material/input';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatIcon} from '@angular/material/icon';
@@ -53,7 +53,9 @@ import {EditIngredientComponent} from '../../dialog/edit-ingredient/edit-ingredi
     MatSuffix,
     MatTable,
     ReactiveFormsModule,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    MatError,
+    MatHint
   ],
   templateUrl: './ingredient.component.html',
   styleUrl: './ingredient.component.scss'
@@ -71,8 +73,8 @@ export class IngredientComponent implements OnInit, AfterViewInit{
   ingredientForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     ingredientUnit: new FormControl('', [Validators.required]),
-    unitPrice: new FormControl(0, [Validators.required]),
-    sellPrice: new FormControl(0, [Validators.required]),
+    unitPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
+    sellPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
   })
 
 

@@ -9,24 +9,37 @@
     <div class="product-creation">
       <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
-        <input matInput [formControl]="ingredientForm.controls.name" maxlength="40">
+        <input matInput [formControl]="ingredientForm.controls.name">
+        @if (ingredientForm.controls.name.hasError('required')) {
+          <mat-error>El nombre es <strong>requerido</strong></mat-error>
+        }
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Unidad</mat-label>
         <input matInput [formControl]="ingredientForm.controls.ingredientUnit" >
+        @if (ingredientForm.controls.ingredientUnit.hasError('required')) {
+          <mat-error>La unidad es <strong>requerida</strong></mat-error>
+        }
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Precio de compra por unidad</mat-label>
-        <input type="number" matInput [formControl]="ingredientForm.controls.unitPrice">
+        <input type="number" min="0" matInput [formControl]="ingredientForm.controls.unitPrice">
+        <mat-hint>no se admiten negativos</mat-hint>
+        @if (ingredientForm.controls.unitPrice.hasError('required')) {
+          <mat-error>El precio de compra es <strong>requerido</strong></mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Precio de venta por unidad</mat-label>
-        <input type="number" matInput [formControl]="ingredientForm.controls.sellPrice">
+        <input type="number" min="0" matInput [formControl]="ingredientForm.controls.sellPrice">
+        <mat-hint>no se admiten negativos</mat-hint>
+        @if (ingredientForm.controls.sellPrice.hasError('required')) {
+          <mat-error>El precio de venta es <strong>requerido</strong></mat-error>
+        }
       </mat-form-field>
       <div>
         <button mat-flat-button (click)="createIngredient()">Crear Ingrediente</button>
-
       </div>
     </div>
   }
@@ -37,7 +50,7 @@
   @if (tableView) {
     <div class="searcher">
       <mat-form-field appearance="outline">
-        <mat-label>Filter</mat-label>
+        <mat-label>Filtro por nombre</mat-label>
         <input matInput (keyup)="applyFilter($event)"  #input>
       </mat-form-field>
     </div>
@@ -106,7 +119,8 @@
           </mat-card-content>
           <mat-card-footer>
             <h4>Precio de compra: {{ingredient.unitPrice}} Bs/{{ingredient.ingredientUnit}}</h4>
-            <h4>Precio de venta: {{ingredient.quantity}} </h4>
+            <h4>Precio de venta: {{ingredient.sellPrice}} Bs/{{ingredient.ingredientUnit}} </h4>
+            <h4>Cantidad: {{ingredient.quantity}} </h4>
             <div class="button-actions">
               <button mat-icon-button (click)="deleteIngredient(ingredient.id)"><mat-icon>delete</mat-icon></button>
               <button mat-icon-button (click)="editIngredient(ingredient)"><mat-icon>edit</mat-icon></button>

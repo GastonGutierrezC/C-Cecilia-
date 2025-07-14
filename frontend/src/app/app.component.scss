@@ -1,0 +1,19 @@
+
+
+.water-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.water-mark {
+  opacity: 20%;
+  width: 100%;
+  max-width: 50rem;
+  aspect-ratio: 1;
+  place-self: center;
+  position: fixed;
+  top: 8rem;
+  z-index: -2;
+}

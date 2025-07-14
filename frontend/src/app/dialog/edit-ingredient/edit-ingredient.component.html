@@ -3,19 +3,33 @@
   <div class="dialog-form">
     <mat-form-field appearance="outline">
       <mat-label>Nombre</mat-label>
-      <input matInput [formControl]="ingredientForm.controls.name" maxlength="40">
+      <input matInput [formControl]="ingredientForm.controls.name">
+      @if (ingredientForm.controls.name.hasError('required')) {
+        <mat-error>El nombre es <strong>requerido</strong></mat-error>
+      }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Unidad de ingrediente</mat-label>
-      <input type="number" matInput [formControl]="ingredientForm.controls.ingredientUnit" >
+      <input type="text" matInput [formControl]="ingredientForm.controls.ingredientUnit" >
+      @if (ingredientForm.controls.ingredientUnit.hasError('required')) {
+        <mat-error>La unidad es <strong>requerida</strong></mat-error>
+      }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Compra de venta</mat-label>
-      <input type="number" matInput [formControl]="ingredientForm.controls.unitPrice">
+      <input type="number" min="0" matInput [formControl]="ingredientForm.controls.unitPrice">
+      <mat-hint>no se admiten negativos</mat-hint>
+      @if (ingredientForm.controls.unitPrice.hasError('required')) {
+        <mat-error>El precio de compra es <strong>requerido</strong></mat-error>
+      }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Precio de venta</mat-label>
-      <input type="number" matInput [formControl]="ingredientForm.controls.sellPrice">
+      <input type="number" min="0" matInput [formControl]="ingredientForm.controls.sellPrice">
+      <mat-hint>no se admiten negativos</mat-hint>
+      @if (ingredientForm.controls.sellPrice.hasError('required')) {
+        <mat-error>El precio de venta es <strong>requerido</strong></mat-error>
+      }
     </mat-form-field>
     <div>
       <button mat-flat-button (click)="editProduct()">Editar Producto</button>

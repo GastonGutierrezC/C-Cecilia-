@@ -33,7 +33,7 @@ public class OutputIngredientController(
     [HttpPost]
     public async Task<ActionResult<bool>> Create(CreateOutputIngredient dto)
     {
-        repository.AddAsync(mapper.Map<OutputIngredients>(dto));
+        await repository.AddAsync(mapper.Map<OutputIngredients>(dto));
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -44,7 +44,7 @@ public class OutputIngredientController(
         if (entity is null) return NotFound();
 
         mapper.Map(dto, entity);
-        repository.UpdateAsync(entity);
+        await repository.UpdateAsync(entity);
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -54,7 +54,7 @@ public class OutputIngredientController(
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return NotFound();
 
-        repository.DeleteAsync(entity);
+        await repository.DeleteAsync(entity);
         return Ok(await repository.SaveChangesAsync());
     }
 }

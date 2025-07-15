@@ -38,7 +38,7 @@ public class UserController(
     public async Task<ActionResult<bool>> CreateUser(CreateUser dto)
     {
 
-        repository.AddAsync(mapper.Map<User>(dto));
+        await repository.AddAsync(mapper.Map<User>(dto));
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -49,7 +49,7 @@ public class UserController(
         if (user is null) return NotFound();
 
         mapper.Map(dto, user);
-        repository.UpdateAsync(user);
+        await repository.UpdateAsync(user);
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -59,7 +59,7 @@ public class UserController(
         var user = await repository.GetByIdAsync(id);
         if (user is null) return NotFound();
 
-        repository.DeleteAsync(user);
+        await repository.DeleteAsync(user);
         return Ok(await repository.SaveChangesAsync());
     }
 }

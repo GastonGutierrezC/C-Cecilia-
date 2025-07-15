@@ -20,6 +20,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IInputService, InputService>();
+builder.Services.AddScoped<IHomemadeProductService, HomemadeProductService>();
+
 
 
 builder.Services.AddAuthentication();

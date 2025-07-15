@@ -17,6 +17,8 @@ public class ProductIngredientProfile : Profile
               .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
             .ForMember(dest => dest.IngredientId, opt => opt.MapFrom(src => src.IngredientId))
             .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId));
+        CreateMap<HomemadeIngredientDto, ProductIngredients>()
+            .ForMember(dest => dest.ProductId, opt => opt.Ignore());
 
     }
 }

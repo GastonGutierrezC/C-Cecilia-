@@ -45,24 +45,24 @@ public class InputService : IInputService
         if (!homeMade)
         {
             var input = new Input { InputDate = DateTime.Now };
-            _inputRepo.AddAsync(input);
+            await _inputRepo.AddAsync(input);
             await _inputRepo.SaveChangesAsync();
             product.Quantity += dto.Quantity;
-            _productRepo.UpdateAsync(product);
+            await _productRepo.UpdateAsync(product);
             var inputProduct = new InputProducts
             {
                 ProductId = dto.ProductId,
                 Quantity = dto.Quantity,
                 InputId = input.Id
             };
-            _inputProductRepo.AddAsync(inputProduct);
+            await _inputProductRepo.AddAsync(inputProduct);
 
             var inputUser = new InputUser
             {
                 InputId = input.Id,
                 UserId = userId
             };
-            _inputUserRepo.AddAsync(inputUser);
+            await _inputUserRepo.AddAsync(inputUser);
             return await _inputUserRepo.SaveChangesAsync();
         }
         else
@@ -89,18 +89,18 @@ public class InputService : IInputService
             }
 
             var input = new Input { InputDate = DateTime.Now };
-            _inputRepo.AddAsync(input);
+            await _inputRepo.AddAsync(input);
             await _inputRepo.SaveChangesAsync();
 
             foreach (var ingredientRequirement in requiredQuantities)
             {
                 var ingredient = await _ingredientRepo.GetByIdAsync(ingredientRequirement.Key);
                 ingredient.Quantity -= ingredientRequirement.Value;
-                _ingredientRepo.UpdateAsync(ingredient);
+                await _ingredientRepo.UpdateAsync(ingredient);
             }
 
             product.Quantity += dto.Quantity;
-            _productRepo.UpdateAsync(product);
+            await _productRepo.UpdateAsync(product);
 
             var inputProduct = new InputProducts
             {
@@ -108,14 +108,14 @@ public class InputService : IInputService
                 Quantity = dto.Quantity,
                 InputId = input.Id
             };
-            _inputProductRepo.AddAsync(inputProduct);
+            await _inputProductRepo.AddAsync(inputProduct);
 
             var inputUser = new InputUser
             {
                 InputId = input.Id,
                 UserId = userId
             };
-            _inputUserRepo.AddAsync(inputUser);
+            await _inputUserRepo.AddAsync(inputUser);
 
             return await _inputUserRepo.SaveChangesAsync();
         }

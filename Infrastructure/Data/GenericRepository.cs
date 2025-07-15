@@ -36,20 +36,23 @@ public class GenericRepository<T>(BreadContext context): IGenericRepository<T> w
         return await ApplySpecification(spec).ToListAsync();
     }
 
-    public void AddAsync(T entity)
+    public Task AddAsync(T entity)
     {
         context.Set<T>().Add(entity);
+        return Task.CompletedTask; 
     }
 
-    public void UpdateAsync(T entity)
+    public Task UpdateAsync(T entity)
     {
         context.Set<T>().Attach(entity);
         context.Entry(entity).State = EntityState.Modified;
+        return Task.CompletedTask;
     }
 
-    public void DeleteAsync(T entity)
+    public Task DeleteAsync(T entity)
     {
         context.Set<T>().Remove(entity);
+        return Task.CompletedTask; 
     }
 
     public async Task<bool> SaveChangesAsync()

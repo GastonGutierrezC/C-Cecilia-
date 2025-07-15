@@ -33,7 +33,7 @@ public class OutputController(
     [HttpPost]
     public async Task<ActionResult<bool>> Create(CreateOutput dto)
     {
-        repository.AddAsync(mapper.Map<Output>(dto));
+        await repository.AddAsync(mapper.Map<Output>(dto));
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -43,7 +43,7 @@ public class OutputController(
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return NotFound();
         mapper.Map(dto, entity);
-        repository.UpdateAsync(entity);
+        await repository.UpdateAsync(entity);
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -52,7 +52,7 @@ public class OutputController(
     {
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return NotFound();
-        repository.DeleteAsync(entity);
+        await repository.DeleteAsync(entity);
         return Ok(await repository.SaveChangesAsync());
     }
 }

@@ -51,7 +51,7 @@ public class InputProductController(
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return NotFound();
         mapper.Map(dto, entity);
-        repository.UpdateAsync(entity);
+        await repository.UpdateAsync(entity);
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -60,7 +60,7 @@ public class InputProductController(
     {
         var entity = await repository.GetByIdAsync(id);
         if (entity is null) return NotFound();
-        repository.DeleteAsync(entity);
+        await repository.DeleteAsync(entity);
         return Ok(await repository.SaveChangesAsync());
     }
 }

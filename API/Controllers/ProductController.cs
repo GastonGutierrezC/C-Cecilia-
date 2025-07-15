@@ -33,7 +33,7 @@ public class ProductController(
     [HttpPost]
     public async Task<ActionResult<bool>> CreateProduct(CreateProduct prod)
     {
-        repository.AddAsync(mapper.Map<Product>(prod));
+        await repository.AddAsync(mapper.Map<Product>(prod));
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -44,7 +44,7 @@ public class ProductController(
         if (prod is null) return NotFound();
 
         mapper.Map(dto, prod);
-        repository.UpdateAsync(prod);
+        await repository.UpdateAsync(prod);
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -54,7 +54,7 @@ public class ProductController(
         var prod = await repository.GetByIdAsync(id);
         if (prod is null) return NotFound();
 
-        repository.DeleteAsync(prod);
+        await repository.DeleteAsync(prod);
         return Ok(await repository.SaveChangesAsync());
     }
 

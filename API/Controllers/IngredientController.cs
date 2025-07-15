@@ -34,7 +34,7 @@ public class IngredientController(
    public async Task<ActionResult<bool>> CreateIngredient(CreateIngredient dto)
    {
 
-    repository.AddAsync(mapper.Map<Ingredient>(dto));
+    await repository.AddAsync(mapper.Map<Ingredient>(dto));
     return Ok(await repository.SaveChangesAsync());
    }
 
@@ -46,7 +46,7 @@ public class IngredientController(
         if (ingredient is null) return NotFound();
 
         mapper.Map(dto, ingredient);
-        repository.UpdateAsync(ingredient);
+        await repository.UpdateAsync(ingredient);
         return Ok(await repository.SaveChangesAsync());
     }
 
@@ -56,7 +56,7 @@ public class IngredientController(
         var ingredient = await repository.GetByIdAsync(id);
         if (ingredient is null) return NotFound();
 
-        repository.DeleteAsync(ingredient);
+        await repository.DeleteAsync(ingredient);
         return Ok(await repository.SaveChangesAsync());
     }
 }

@@ -74,7 +74,14 @@ public class ProductIngredientController : ControllerBase
         var saved = await _repository.SaveChangesAsync();
         return Ok(saved);
     }
-
+    
+    [HttpGet("homemade")]
+    public async Task<ActionResult<List<HomemadeProductWithIngredientsResponse>>> GetHomemadeProducts()
+    {
+        var result = await _service.GetHomemadeProductsWithIngredientsAsync();
+        return Ok(result);
+    }
+    
     [HttpPost("homemade")]
     public async Task<ActionResult<bool>> Create(CreateHomemadeProduct dto)
     {

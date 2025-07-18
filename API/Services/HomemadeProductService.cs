@@ -1,6 +1,7 @@
 
 using AutoMapper;
 using Core.DTOs.RequestDTOs;
+using Core.DTOs.ResponseDTOs;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Interfaces.Services;
@@ -131,4 +132,52 @@ public class HomemadeProductService : IHomemadeProductService
         return await _productRepo.SaveChangesAsync();
     }
 
+    public async Task<List<HomemadeProductWithIngredientsResponse>> GetHomemadeProductsWithIngredientsAsync()
+    {
+        var products = await _productRepo.ListAllAsync();
+        var productIngredients = await _productIngredientRepo.ListAllAsync();
+        var ingredients = await _ingredientRepo.ListAllAsync();
+
+        var homemadeProducts = products
+            .Where(p => productIngredients.Any(pi => pi.ProductId == p.Id))
+            .ToList();
+
+        var responseList = new List<HomemadeProductWithIngredientsResponse>();
+
+        foreach (var product in homemadeProducts)
+        {
+            var ingredientsForProduct = productIngredients
+                .Where(pi => pi.ProductId == product.Id)
+                .ToList();
+
+            var ingredientDetails = new List<HomemadeIngredientResponse>();
+
+            foreach (var pi in ingredientsForProduct)
+            {
+                var ingredient = ingredients.FirstOrDefault(i => i.Id == pi.IngredientId);
+                if (ingredient != null)
+                {
+                    ingredientDetails.Add(new HomemadeIngredientResponse
+                    {
+                        Name = ingredient.Name,
+                        Quantity = pi.Quantity,
+                        IngredientUnit = ingredient.IngredientUnit,
+                        UnitPrice = ingredient.UnitPrice,
+                        SellPrice = ingredient.SellPrice
+                    });
+                }
+            }
+
+            responseList.Add(new HomemadeProductWithIngredientsResponse
+            {
+                Name = product.Name,
+                InPrice = product.InPrice,
+                SellPrice = product.SellPrice,
+                Quantity = product.Quantity,
+                Ingredients = ingredientDetails
+            });
+        }
+
+        return responseList;
+    }
 }

@@ -19,7 +19,7 @@ import {
 } from "@angular/material/table";
 import {MatError, MatFormField, MatHint, MatInput, MatLabel, MatSuffix} from "@angular/material/input";
 import {MatSort, MatSortHeader} from "@angular/material/sort";
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ProductModel} from '../../models/products';
 import {ProductService} from '../../service/product-service';
 import {MatDialog} from '@angular/material/dialog';
@@ -29,13 +29,17 @@ import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-th
 import {MatIcon} from '@angular/material/icon';
 import {IngredientData, IngredientModel} from '../../models/ingredient';
 import {IngredientService} from '../../service/ingredient-service';
-import {HomeMadeProductModel} from '../../models/product-ingredient';
-import {MatChip, MatChipRow, MatChipSet} from '@angular/material/chips';
-import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
-
+import {
+  HomeMadeProductContentModel,
+  HomeMadeProductIngredientModel,
+  HomeMadeProductModel
+} from '../../models/product-ingredient';
+import {ProductIngredientService} from '../../service/product-ingredient-service';
+import {EditHomemadeProductComponent} from '../../dialog/edit-homemade-product/edit-homemade-product.component';
 @Component({
   selector: 'app-homemade-products',
   imports: [
+    FormsModule,
     MatButton,
     MatCard,
     MatCardContent,
@@ -65,11 +69,6 @@ import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/d
     ReactiveFormsModule,
     MatNoDataRow,
     MatHeaderCellDef,
-    MatChipSet,
-    CdkDropList,
-    MatChip,
-    CdkDrag,
-    MatChipRow,
     MatCardSubtitle
   ],
   templateUrl: './homemade-products.component.html',
@@ -79,19 +78,19 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
   onCreationMode = true
   tableView = true
   columns: string[] = ['name', 'inPrice', 'sellPrice', 'quantity', 'delete', 'edit']
-  productsDataSource: MatTableDataSource<ProductModel> = new MatTableDataSource<ProductModel>();
-  productService = inject(ProductService)
+  productsDataSource: MatTableDataSource<HomeMadeProductContentModel> = new MatTableDataSource<HomeMadeProductContentModel>();
+  homemadeProductService = inject(ProductIngredientService)
   ingredientService = inject(IngredientService)
-  products:  ProductModel[] = [];
+  products:  HomeMadeProductContentModel[] = [];
   ingredients:  IngredientModel[] = [];
   image64?: string;
   fileName?: string;
   filterProductName = new FormControl('');
   filteredIngredients:  IngredientModel[] = [];
-  filteredProducts: ProductModel[] = [];
+  filteredProducts: HomeMadeProductContentModel[] = [];
   readonly dialog = inject(MatDialog);
   newProductIngredientsChips = signal<string[]>([])
-  newProductIngredients: HomeMadeProductModel[] = [];
+  newProductIngredients: HomeMadeProductIngredientModel[] = [];
   productForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     inPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
@@ -120,7 +119,7 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
     return;
   }
   ngOnInit() {
-    this.productService.getProducts().subscribe(products => {
+    this.homemadeProductService.getProducts().subscribe(products => {
       this.productsDataSource = new MatTableDataSource(products);
       this.products = products;
       this.filteredProducts = products;
@@ -135,14 +134,14 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.productsDataSource.filter = filterValue.trim().toLowerCase();
-    this.productsDataSource.filterPredicate = (data, filter1) => data.name.toLowerCase().trim().includes(filter1);
+    this.productsDataSource.filterPredicate = (data, filter1) => data.product.name.toLowerCase().trim().includes(filter1);
     if (this.productsDataSource.paginator) {
       this.productsDataSource.paginator.firstPage();
     }
   }
   ngAfterViewInit() {
-    this.productService.getProducts().subscribe(products => {
-      this.productsDataSource = new MatTableDataSource<ProductModel>(products);
+    this.homemadeProductService.getProducts().subscribe(products => {
+      this.productsDataSource = new MatTableDataSource<HomeMadeProductContentModel>(products);
       this.products = products;
       this.filteredProducts = products;
       this.productsDataSource.paginator = this.paginator()
@@ -151,7 +150,7 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
   }
 
   filter(){
-    this.filteredProducts = this.products.filter(product => product.name.toLowerCase().trim().includes(this.filterProductName.value?.toLowerCase().trim() ?? ''))
+    this.filteredProducts = this.products.filter(product => product.product.name.toLowerCase().trim().includes(this.filterProductName.value?.toLowerCase().trim() ?? ''))
   }
 
   createProduct() {
@@ -163,14 +162,17 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
       && this.productForm.value.name !== undefined
       && this.productForm.value.inPrice !== undefined
       && this.image64) {
-      this.productService.createProduct({
-        name: this.productForm.value.name,
-        inPrice: this.productForm.value.inPrice,
-        sellPrice: this.productForm.value.sellPrice,
-        image: this.image64,
-        quantity: 0
+      this.homemadeProductService.createProduct({
+        product: {
+          name: this.productForm.value.name,
+          inPrice: this.productForm.value.inPrice,
+          sellPrice: this.productForm.value.sellPrice,
+          image: this.image64,
+          quantity: 0
+        },
+        ingredients: this.newProductIngredients
       }).subscribe(res => {
-        this.productService.getProducts().subscribe(products => {
+        this.homemadeProductService.getProducts().subscribe(products => {
           this.products = products;
           this.fileName = undefined;
           this.image64 = undefined;
@@ -188,8 +190,8 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
     this.dialog.open(ConfirmationDialogComponent, {
     }).afterClosed().subscribe((result: boolean) => {
       if (result) {
-        this.productService.deleteProduct(id).subscribe(res => {
-          this.productService.getProducts().subscribe(products => {
+        this.homemadeProductService.deleteProduct(id).subscribe(res => {
+          this.homemadeProductService.getProducts().subscribe(products => {
             this.productsDataSource = new MatTableDataSource(products);
             this.products = products;
             this.filteredProducts = products;
@@ -201,13 +203,13 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
     })
   }
 
-  editProduct(product: ProductModel) {
-    this.dialog.open(EditThirdProductComponent, {
+  editProduct(product: HomeMadeProductContentModel) {
+    this.dialog.open(EditHomemadeProductComponent, {
       data: product
     }).afterClosed().subscribe({
       next: (res: boolean) => {
         if (res) {
-          this.productService.getProducts().subscribe(products => {
+          this.homemadeProductService.getProducts().subscribe(products => {
             this.products = products;
             this.filteredProducts = products;
             this.productsDataSource = new MatTableDataSource(products);
@@ -219,21 +221,21 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
     })
   }
 
+  updatePreparationPrice() {
+    let price = this.newProductIngredients.reduce((prev, curr) =>
+      prev += (curr.price ?? 0) * curr.quantity, 0)
+    this.productForm.controls.inPrice.setValue(price)
+  }
   selectIngredient(ingredient: IngredientModel) {
     if (this.newProductIngredients.filter(value => value.ingredientId === ingredient.id).length > 0) return
-    this.newProductIngredients.push({ingredientId: ingredient.id, quantity: 1})
+    this.newProductIngredients.push({ingredientId: ingredient.id, quantity: 1, price: ingredient.unitPrice})
     this.newProductIngredientsChips.update(value => value.concat([ingredient.name]))
+    this.updatePreparationPrice()
   }
   deselectIngredient(id: number) {
     this.newProductIngredients = this.newProductIngredients.filter(i => i.ingredientId !== id)
     this.newProductIngredientsChips.update(value => value.filter(value => value !== this.ingredients.find(value1 => value1.id === id)!.name))
-  }
-  addOne(index: number) {
-    this.newProductIngredients[index].quantity += 1;
+    this.updatePreparationPrice()
   }
 
-  removeOne(index: number) {
-    if (this.newProductIngredients[index].quantity === 1) return
-    this.newProductIngredients[index].quantity -= 1;
-  }
 }

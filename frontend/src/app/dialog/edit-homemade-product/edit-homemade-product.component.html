@@ -1,0 +1,75 @@
+<h2>Editar producto casero</h2>
+<mat-dialog-content>
+  <div class="product-creation">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput [formControl]="productForm.controls.name">
+      @if (productForm.controls.name.hasError('required')) {
+        <mat-error>El nombre es <strong>requerido</strong></mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Precio de ingredientes adjuntos(Bs)</mat-label>
+      <input type="number" matInput [formControl]="productForm.controls.inPrice" >
+      <mat-hint>no se admiten negativos</mat-hint>
+      @if (productForm.controls.inPrice.hasError('required')) {
+        <mat-error>El precio de compra es <strong>requerido</strong></mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Precio de venta</mat-label>
+      <input type="number" matInput [formControl]="productForm.controls.sellPrice">
+      <mat-hint>no se admiten negativos</mat-hint>
+      @if (productForm.controls.sellPrice.hasError('required')) {
+        <mat-error>El precio de venta es <strong>requerido</strong></mat-error>
+      }
+    </mat-form-field>
+    <input #productUpload class="upload-product-image-input" type="file" accept=".png, .jpg" (change)="convertToBase64($event)"/>
+    <button mat-stroked-button (click)="productUpload.click()" matIconSuffix>Subir imagen<mat-icon>upload</mat-icon></button>
+    @if (image64) {
+      <small>imagen subida exitosamente</small>
+    }
+
+    @for (name of newProductIngredientsChips(); track $index; let i = $index){
+      <mat-card class="new-ingredient-card">
+        <mat-card-header>
+          <mat-card-subtitle>
+            {{name}}
+            <button mat-icon-button>
+              <mat-icon (click)="deselectIngredient(newProductIngredients[i].ingredientId)">remove</mat-icon>
+            </button>
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p></p>
+        </mat-card-content>
+        <mat-card-footer>
+          <mat-form-field appearance="outline">
+            <mat-label>Cantidad por unidad de producto</mat-label>
+            <input  [(ngModel)]="newProductIngredients[i].quantity" (ngModelChange)="updatePreparationPrice()" (change)="updatePreparationPrice()" matInput type="number" [value]="newProductIngredients[i].quantity">
+          </mat-form-field>
+        </mat-card-footer>
+      </mat-card>
+    }
+    <div>
+      <button mat-flat-button (click)="editProduct()">Crear Producto</button>
+    </div>
+  </div>
+  <div class="ingredients-div">
+    @for (ingredient of filteredIngredients; track $index)
+    {
+      <mat-card (click)="selectIngredient(ingredient)" class="ingredient-card">
+        <mat-card-header>
+          <mat-card-title>
+            {{ingredient.name}}
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <h4>Precio de compra: {{ingredient.unitPrice}} Bs</h4>
+          <h4>Precio de venta: {{ingredient.sellPrice}} Bs</h4>
+          <h4>Cantidad en stock({{ingredient.ingredientUnit}}): {{ingredient.quantity}}</h4>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</mat-dialog-content>

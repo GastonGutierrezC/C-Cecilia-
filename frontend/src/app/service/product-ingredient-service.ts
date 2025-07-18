@@ -2,7 +2,13 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment.development';
 import {ProductData, ProductModel} from '../models/products';
-import {ProductIngredientData, ProductIngredientModel} from '../models/product-ingredient';
+import {
+  HomeMadeProductContentModel,
+  HomeMadeProductData,
+  HomeMadeProductModel,
+  ProductIngredientData,
+  ProductIngredientModel
+} from '../models/product-ingredient';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +19,17 @@ export class ProductIngredientService {
   api = environment.baseApiUrl;
 
   getProducts() {
-    return this.http.get<ProductIngredientModel[]>(this.api + '/productingredient');
+    return this.http.get<HomeMadeProductContentModel[]>(this.api + '/productingredient/homemade');
   }
 
-  createProduct(productData: ProductIngredientData) {
-    return this.http.post<boolean>(this.api + '/productingredient', productData);
+  createProduct(productData: HomeMadeProductData) {
+    return this.http.post<boolean>(this.api + '/productingredient/homemade/', productData);
   }
-  editProduct(productData: ProductIngredientModel) {
-    return this.http.put<boolean>(this.api + '/productingredient/' + productData.id, productData);
+  editProduct(productData: HomeMadeProductModel) {
+    return this.http.put<boolean>(this.api + '/productingredient/homemade/' + productData.product.id, productData);
+  }
+
+  deleteProduct(id: number) {
+    return this.http.delete<boolean>(this.api + '/productingredient/homemade/' + id);
   }
 }

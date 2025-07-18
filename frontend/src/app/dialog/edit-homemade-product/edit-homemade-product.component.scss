@@ -1,0 +1,94 @@
+@use '../../../styles' as styles;
+
+.ingredients-div {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  place-content: start;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  scrollbar-width: thin;
+}
+
+.product-creation {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1rem;
+  gap: 1rem;
+}
+
+.products-div {
+  display: flex;
+  flex-direction: row;
+  place-content:  center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  h4 {
+    text-align: center;
+  }
+  div {
+    img {
+      width: 100%;
+      aspect-ratio: 1;
+    }
+  }
+}
+
+.searcher {
+  display: flex;
+  flex-direction: row;
+  place-content: center;
+  padding: 1rem 0;
+  * {
+    width: 90%;
+  }
+}
+.new-ingredient-card {
+  background: styles.$background-secondary;
+  padding: 1rem;
+}
+.products-card {
+  padding: 1rem 0;
+  background: styles.$secondary;
+}
+
+.ingredient-card {
+  max-width: 12rem;
+  background: styles.$secondary;
+}
+
+.image-container {
+  min-height: 18rem;
+  max-height: 18rem;
+  scale: 1;
+  img {
+    min-height: 18rem;
+    max-height: 18rem;
+    scale: 1;
+  }
+}
+.table-products {
+  background: styles.$secondary;
+  .mat-mdc-table-sticky-border-elem-left {
+    border-right: 1px solid black;
+  }
+}
+
+.table-container {
+  max-width: 100%;
+  overflow: auto;
+}
+.third-products-page {
+  padding: 1rem;
+}
+
+.upload-product-image-input {
+  display: none;
+}
+.button-actions {
+  display: flex;
+  flex-direction: row;
+  place-content: space-around;
+}

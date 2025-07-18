@@ -95,6 +95,10 @@ public class InputService : IInputService
             foreach (var ingredientRequirement in requiredQuantities)
             {
                 var ingredient = await _ingredientRepo.GetByIdAsync(ingredientRequirement.Key);
+                if (ingredient == null)
+                {
+                    throw new Exception($"Ingredient with ID {ingredientRequirement.Key} not found.");
+                }
                 ingredient.Quantity -= ingredientRequirement.Value;
                 await _ingredientRepo.UpdateAsync(ingredient);
             }

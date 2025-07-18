@@ -6,4 +6,5 @@ public interface IHomemadeProductService
 {
     Task<bool> RegisterHomemadeProductAsync(CreateHomemadeProduct dto);
     Task<bool> UpdateHomemadeProductAsync(int productId, CreateHomemadeProduct dto);
+    Task<bool> DeleteHomemadeProductAsync(int productId);
 }

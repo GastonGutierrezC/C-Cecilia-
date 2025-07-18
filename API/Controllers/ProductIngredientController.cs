@@ -86,10 +86,27 @@ public class ProductIngredientController : ControllerBase
 
     [HttpPut("homemade/{id}")]
     public async Task<ActionResult<bool>> UpdateHomemade(int id, CreateHomemadeProduct dto)
-    {   
+    {
         var result = await _service.UpdateHomemadeProductAsync(id, dto);
         if (!result)
             return BadRequest("Could not update the homemade product.");
         return Ok(true);
+    }
+
+    [HttpDelete("homemade/{id}")]
+    public async Task<ActionResult<bool>> DeleteHomemade(int id)
+    {
+        try
+        {
+            var result = await _service.DeleteHomemadeProductAsync(id);
+            if (!result)
+                return BadRequest("No se pudo eliminar el producto.");
+
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 }

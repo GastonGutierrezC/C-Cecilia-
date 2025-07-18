@@ -1,3 +1,4 @@
+
 using AutoMapper;
 using Core.DTOs.RequestDTOs;
 using Core.Entities;
@@ -11,17 +12,22 @@ public class HomemadeProductService : IHomemadeProductService
     private readonly IGenericRepository<Product> _productRepo;
     private readonly IGenericRepository<ProductIngredients> _productIngredientRepo;
     private readonly IGenericRepository<Ingredient> _ingredientRepo;
+    private readonly IGenericRepository<InputProducts> _inputProductRepo;
+    private readonly IGenericRepository<OutputProducts> _outputProductRepo;
     private readonly IMapper _mapper;
 
     public HomemadeProductService(
         IGenericRepository<Product> productRepo,
         IGenericRepository<Ingredient> ingredientRepo,
-        IGenericRepository<ProductIngredients> productIngredientRepo, IMapper mapper)
+        IGenericRepository<ProductIngredients> productIngredientRepo, IMapper mapper, IGenericRepository<InputProducts> inputProductRepo,
+        IGenericRepository<OutputProducts> outputProductRepo)
     {
         _productRepo = productRepo;
         _ingredientRepo = ingredientRepo;
         _productIngredientRepo = productIngredientRepo;
         _mapper = mapper;
+        _inputProductRepo = inputProductRepo;
+        _outputProductRepo = outputProductRepo;
     }
 
     public async Task<bool> RegisterHomemadeProductAsync(CreateHomemadeProduct dto)
@@ -47,7 +53,7 @@ public class HomemadeProductService : IHomemadeProductService
         }
         return await _productIngredientRepo.SaveChangesAsync();
     }
-    
+
     public async Task<bool> UpdateHomemadeProductAsync(int productId, CreateHomemadeProduct dto)
     {
         var product = await _productRepo.GetByIdAsync(productId);
@@ -97,6 +103,32 @@ public class HomemadeProductService : IHomemadeProductService
         }
 
         return await _productIngredientRepo.SaveChangesAsync();
+    }
+
+    public async Task<bool> DeleteHomemadeProductAsync(int productId)
+    {
+        var inputProducts = await _inputProductRepo.ListAllAsync();
+        if (inputProducts.Any(x => x.ProductId == productId))
+            throw new Exception("El producto está relacionado con una entrada y no puede eliminarse.");
+
+        var outputProducts = await _outputProductRepo.ListAllAsync();
+        if (outputProducts.Any(x => x.ProductId == productId))
+            throw new Exception("El producto está relacionado con una salida y no puede eliminarse.");
+
+        var productIngredients = await _productIngredientRepo.ListAllAsync();
+        var ingredientsToDelete = productIngredients.Where(x => x.ProductId == productId).ToList();
+        foreach (var deletes in ingredientsToDelete)
+        {
+            await _productIngredientRepo.DeleteAsync(deletes);
+        }
+        await _productIngredientRepo.SaveChangesAsync();
+
+        var product = await _productRepo.GetByIdAsync(productId);
+        if (product == null)
+            throw new Exception("Producto no encontrado.");
+
+        await _productRepo.DeleteAsync(product);
+        return await _productRepo.SaveChangesAsync();
     }
 
 }

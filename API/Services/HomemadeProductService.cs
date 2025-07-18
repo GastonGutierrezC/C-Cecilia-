@@ -132,7 +132,7 @@ public class HomemadeProductService : IHomemadeProductService
         return await _productRepo.SaveChangesAsync();
     }
 
-    public async Task<List<HomemadeProductWithIngredientsResponse>> GetHomemadeProductsWithIngredientsAsync()
+    public async Task<List<HomemadeProductGroupedResponse>> GetHomemadeProductsWithIngredientsAsync()
     {
         var products = await _productRepo.ListAllAsync();
         var productIngredients = await _productIngredientRepo.ListAllAsync();
@@ -142,7 +142,7 @@ public class HomemadeProductService : IHomemadeProductService
             .Where(p => productIngredients.Any(pi => pi.ProductId == p.Id))
             .ToList();
 
-        var responseList = new List<HomemadeProductWithIngredientsResponse>();
+        var responseList = new List<HomemadeProductGroupedResponse>();
 
         foreach (var product in homemadeProducts)
         {
@@ -168,12 +168,18 @@ public class HomemadeProductService : IHomemadeProductService
                 }
             }
 
-            responseList.Add(new HomemadeProductWithIngredientsResponse
+            var productDTO = new ProductResponse
             {
+                Id = product.Id,
                 Name = product.Name,
                 InPrice = product.InPrice,
                 SellPrice = product.SellPrice,
-                Quantity = product.Quantity,
+                Image = product.Image,
+                Quantity = product.Quantity
+            };
+            responseList.Add(new HomemadeProductGroupedResponse
+            {
+                Product = productDTO,
                 Ingredients = ingredientDetails
             });
         }

@@ -1,4 +1,3 @@
-// API/Controllers/ProductIngredientController.cs
 using AutoMapper;
 using Core.DTOs.RequestDTOs;
 using Core.DTOs.ResponseDTOs;
@@ -76,12 +75,12 @@ public class ProductIngredientController : ControllerBase
     }
     
     [HttpGet("homemade")]
-    public async Task<ActionResult<List<HomemadeProductWithIngredientsResponse>>> GetHomemadeProducts()
+    public async Task<ActionResult<List<HomemadeProductGroupedResponse>>> GetHomemadeProducts()
     {
         var result = await _service.GetHomemadeProductsWithIngredientsAsync();
         return Ok(result);
     }
-    
+
     [HttpPost("homemade")]
     public async Task<ActionResult<bool>> Create(CreateHomemadeProduct dto)
     {

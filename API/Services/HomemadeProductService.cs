@@ -159,6 +159,7 @@ public class HomemadeProductService : IHomemadeProductService
                 {
                     ingredientDetails.Add(new HomemadeIngredientResponse
                     {
+                        Id = ingredient.Id,
                         Name = ingredient.Name,
                         Quantity = pi.Quantity,
                         IngredientUnit = ingredient.IngredientUnit,

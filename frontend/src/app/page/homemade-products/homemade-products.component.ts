@@ -36,6 +36,7 @@ import {
 } from '../../models/product-ingredient';
 import {ProductIngredientService} from '../../service/product-ingredient-service';
 import {EditHomemadeProductComponent} from '../../dialog/edit-homemade-product/edit-homemade-product.component';
+import {MatDivider} from '@angular/material/divider';
 @Component({
   selector: 'app-homemade-products',
   imports: [
@@ -69,7 +70,8 @@ import {EditHomemadeProductComponent} from '../../dialog/edit-homemade-product/e
     ReactiveFormsModule,
     MatNoDataRow,
     MatHeaderCellDef,
-    MatCardSubtitle
+    MatCardSubtitle,
+    MatDivider
   ],
   templateUrl: './homemade-products.component.html',
   styleUrl: './homemade-products.component.scss'
@@ -88,6 +90,9 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
   filterProductName = new FormControl('');
   filteredIngredients:  IngredientModel[] = [];
   filteredProducts: HomeMadeProductContentModel[] = [];
+  expandedElement: HomeMadeProductContentModel | null = null;
+  columnsToDisplayWithExpand = [...this.columns, 'expand'];
+
   readonly dialog = inject(MatDialog);
   newProductIngredientsChips = signal<string[]>([])
   newProductIngredients: HomeMadeProductIngredientModel[] = [];
@@ -237,5 +242,11 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
     this.newProductIngredientsChips.update(value => value.filter(value => value !== this.ingredients.find(value1 => value1.id === id)!.name))
     this.updatePreparationPrice()
   }
+  isExpanded(element: HomeMadeProductContentModel) {
+    return this.expandedElement === element;
+  }
 
+  toggle(element: HomeMadeProductContentModel) {
+    this.expandedElement = this.isExpanded(element) ? null : element;
+  }
 }

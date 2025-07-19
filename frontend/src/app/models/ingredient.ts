@@ -2,7 +2,7 @@ export interface IngredientModel {
   id: number;
   name: string;
   quantity: number;
-  ingredientUnit: number;
+  ingredientUnit: string;
   unitPrice: number;
   sellPrice: number;
 }

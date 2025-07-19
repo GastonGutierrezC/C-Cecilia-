@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.Interfaces;
 using Core.Interfaces.Services;
 using Infrastructure.Data;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IInputService, InputService>();
 builder.Services.AddScoped<IHomemadeProductService, HomemadeProductService>();
+builder.Services.AddScoped<ISalesMetricsService, SalesMetricsService>();
+builder.Services.AddScoped<ISingleItemSalesMetricsService, SingleItemSalesMetricsService>();
 
 
 

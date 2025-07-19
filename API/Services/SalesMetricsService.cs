@@ -28,47 +28,59 @@ public class SalesMetricsService : ISalesMetricsService
         _ingredientRepository = ingredientRepository;
     }
 
-    public async Task<List<SalesMetricsDto>> GetSalesByDateRangeAsync(DateOnly date)
+    public async Task<List<SalesMetricsDto>> GetSalesByDateRangeAsync(DateOnly startDate, DateOnly endDate)
     {
         var outputs = await _outputRepo.ListAllAsync();
 
         var filteredOutputs = outputs
-            .Where(o => DateOnly.FromDateTime(o.OutputDate) == date)
+            .Where(o =>
+                DateOnly.FromDateTime(o.OutputDate) >= startDate &&
+                DateOnly.FromDateTime(o.OutputDate) <= endDate)
             .ToList();
-
-        var outputIds = filteredOutputs.Select(o => o.Id).ToList();
 
         var allProducts = await _productRepository.ListAllAsync();
         var allIngredients = await _ingredientRepository.ListAllAsync();
+        var allOutputProducts = await _outputProductsRepo.ListAllAsync();
+        var allOutputIngredients = await _outputIngredientsRepo.ListAllAsync();
 
-        var outputProducts = (await _outputProductsRepo.ListAllAsync())
-            .Where(op => outputIds.Contains(op.OutputId))
-            .ToList();
+        var groupedByDate = filteredOutputs
+            .GroupBy(o => DateOnly.FromDateTime(o.OutputDate))
+            .OrderBy(g => g.Key);
 
-        var outputIngredients = (await _outputIngredientsRepo.ListAllAsync())
-            .Where(oi => outputIds.Contains(oi.OutputId))
-            .ToList();
+        var result = new List<SalesMetricsDto>();
 
-        double productTotal = outputProducts.Sum(op =>
+        foreach (var group in groupedByDate)
         {
-            var product = allProducts.FirstOrDefault(p => p.Id == op.ProductId);
-            return product != null ? op.Quantity * product.SellPrice : 0;
-        });
+            var outputIds = group.Select(o => o.Id).ToList();
 
-        double ingredientTotal = outputIngredients.Sum(oi =>
-        {
-            var ingredient = allIngredients.FirstOrDefault(i => i.Id == oi.IngredientId);
-            return ingredient != null ? oi.Quantity * ingredient.SellPrice : 0;
-        });
+            var outputProducts = allOutputProducts
+                .Where(op => outputIds.Contains(op.OutputId))
+                .ToList();
 
-        return new List<SalesMetricsDto>
-        {
-            new SalesMetricsDto
+            var outputIngredients = allOutputIngredients
+                .Where(oi => outputIds.Contains(oi.OutputId))
+                .ToList();
+
+            double productTotal = outputProducts.Sum(op =>
             {
-                Date = date,
+                var product = allProducts.FirstOrDefault(p => p.Id == op.ProductId);
+                return product != null ? op.Quantity * product.SellPrice : 0;
+            });
+
+            double ingredientTotal = outputIngredients.Sum(oi =>
+            {
+                var ingredient = allIngredients.FirstOrDefault(i => i.Id == oi.IngredientId);
+                return ingredient != null ? oi.Quantity * ingredient.SellPrice : 0;
+            });
+
+            result.Add(new SalesMetricsDto
+            {
+                Date = group.Key,
                 ProductSalesTotal = productTotal,
                 IngredientSalesTotal = ingredientTotal
-            }
-        };
+            });
+        }
+
+        return result;
     }
 }

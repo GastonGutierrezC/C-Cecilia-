@@ -22,10 +22,10 @@ public class SingleItemSalesMetricsController : ControllerBase
     }
 
     [HttpGet("single-item")]
-    public async Task<ActionResult<SingleItemSalesMetricDto>> GetSingleItemSalesMetrics([FromQuery] string itemName, [FromQuery] DateOnly date)
+    public async Task<ActionResult<SingleItemSalesMetricDto>> GetSingleItemSalesMetrics([FromQuery] int itemId, [FromQuery] DateOnly startDate, [FromQuery] DateOnly endDate)
     {
 
-        var metrics = await _salesMetricsService.GetSalesByDateAndItemNameAsync(date,itemName);
+        var metrics = await _salesMetricsService.GetSalesByDateAndItemNameAsync(startDate,endDate,itemId);
         return Ok(metrics);
         
     }

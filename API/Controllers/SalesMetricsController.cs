@@ -21,9 +21,9 @@ public class SalesMetricsController : ControllerBase
     }
 
 [HttpGet]
-public async Task<ActionResult<List<SalesMetricsDto>>> GetSalesMetricsByDate([FromQuery] DateOnly date)
+public async Task<ActionResult<List<SalesMetricsDto>>> GetSalesMetricsByDate([FromQuery] DateOnly startDate,[FromQuery] DateOnly endDate)
 {
-    var metrics = await _salesMetricsService.GetSalesByDateRangeAsync(date);
+    var metrics = await _salesMetricsService.GetSalesByDateRangeAsync(startDate, endDate);
     return Ok(metrics);
 }
 }

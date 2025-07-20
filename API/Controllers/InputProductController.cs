@@ -14,7 +14,7 @@ namespace API.Controllers;
 [Route("[controller]")]
 public class InputProductController(
     IGenericRepository<InputProducts> repository,
-    IMapper mapper, IInputService _inputService) : ControllerBase
+    IMapper mapper, IInputProductService _inputService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InputProducts>>> GetAll()

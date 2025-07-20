@@ -20,13 +20,15 @@ builder.Services.AddDbContext<BreadContext>(optionsBuilder =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IInputService, InputService>();
+builder.Services.AddScoped<IInputProductService, InputProductService>();
 builder.Services.AddScoped<IHomemadeProductService, HomemadeProductService>();
 builder.Services.AddScoped<ISalesMetricsService, SalesMetricsService>();
 builder.Services.AddScoped<ISingleItemSalesMetricsService, SingleItemSalesMetricsService>();
 builder.Services.AddScoped<IOutputProductService, OutputProductService>();
 builder.Services.AddScoped<IOutputIngredientService, OutputIngredientService>();
 builder.Services.AddScoped<IOutputService, OutputService>();
+builder.Services.AddScoped<IInputService, InputService>();
+
 
 
 

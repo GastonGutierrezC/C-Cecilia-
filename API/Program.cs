@@ -28,6 +28,7 @@ builder.Services.AddScoped<IOutputProductService, OutputProductService>();
 builder.Services.AddScoped<IOutputIngredientService, OutputIngredientService>();
 builder.Services.AddScoped<IOutputService, OutputService>();
 builder.Services.AddScoped<IInputService, InputService>();
+builder.Services.AddScoped<IExternalProductService, ExternalProductService>();
 
 
 

@@ -15,16 +15,17 @@ public class ProductIngredientController : ControllerBase
     private readonly IGenericRepository<ProductIngredients> _repository;
     private readonly IHomemadeProductService _service;
     private readonly IMapper _mapper;
+    IExternalProductService _externalProductService;
 
     public ProductIngredientController(
         IGenericRepository<ProductIngredients> repository,
         IMapper mapper,
-        IHomemadeProductService service)
+        IHomemadeProductService service, IExternalProductService externalProductService)
     {
         _repository = repository;
         _mapper = mapper;
         _service = service;
-
+        _externalProductService = externalProductService;
     }
 
     [HttpGet]
@@ -78,6 +79,13 @@ public class ProductIngredientController : ControllerBase
     public async Task<ActionResult<List<HomemadeProductGroupedResponse>>> GetHomemadeProducts()
     {
         var result = await _service.GetHomemadeProductsWithIngredientsAsync();
+        return Ok(result);
+    }
+
+    [HttpGet("external")]
+    public async Task<ActionResult<List<ProductResponse>>> GetExternalProducts()
+    {
+        var result = await _externalProductService.GetExternalProductsAsync();
         return Ok(result);
     }
 

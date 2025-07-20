@@ -20,19 +20,19 @@ public class UserController(
         return Ok(users.Select(mapper.Map<UserResponse>));
     }
 
-    [HttpGet("login")]
-    public async Task<ActionResult<UserResponse>> GetUserByUsernameAndEmail(
-        [FromQuery] string username,
-        [FromQuery] string email)
-    {
-        var users = await repository.ListAllAsync();
-        var user = users.FirstOrDefault(u => u.Username == username && u.Email == email);
+[HttpPost("login")]
+public async Task<ActionResult<UserResponse>> Login([FromBody] LoginUserDto loginDto)
+{
+    var users = await repository.ListAllAsync();
+    var user = users.FirstOrDefault(u =>
+        u.Username == loginDto.Username && u.Email == loginDto.Email);
 
-        if (user is null)
-            return NotFound("Usuario no encontrado con ese username y email.");
+    if (user is null)
+        return NotFound("Usuario no encontrado con ese username y email.");
 
-        return Ok(mapper.Map<UserResponse>(user));
-    }
+    return Ok(mapper.Map<UserResponse>(user));
+}
+
 
     [HttpPost]
     public async Task<ActionResult<bool>> CreateUser(CreateUser dto)

@@ -18,7 +18,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Cantidad({{ingredientOutput.value.ingredient?.ingredientUnit ?? '__'}})</mat-label>
-          <input matInput [formControl]="ingredientOutput.controls.quantity">
+          <input matInput [formControl]="ingredientOutput.controls.quantity" type="number">
         </mat-form-field>
         <button mat-flat-button (click)="addIngredient()">
           Añadir a la lista
@@ -43,7 +43,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Cantidad</mat-label>
-          <input matInput [formControl]="productOutput.controls.quantity" >
+          <input matInput [formControl]="productOutput.controls.quantity" type="number">
         </mat-form-field>
         <button mat-flat-button (click)="addProduct()">
           Añadir a la lista

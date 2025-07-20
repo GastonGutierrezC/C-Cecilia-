@@ -53,7 +53,6 @@ import {OutputService} from '../../service/output-service';
     MatPaginator,
     MatIcon,
     MatNoDataRow,
-    AsyncPipe,
   ],
   templateUrl: './output.component.html',
   styleUrl: './output.component.scss'
@@ -85,11 +84,6 @@ export class OutputComponent implements OnInit, AfterViewInit{
     this.ingredientService.getIngredients().subscribe(ingredients => {
       this.ingredients = ingredients;
     })
-  }
-  private _filter(value: string) {
-    const filterValue = value.toLowerCase();
-
-    return this.options.filter(option => option.name.toLowerCase().includes(filterValue));
   }
   ngAfterViewInit() {
     this.productsDataSource = new MatTableDataSource(this.outputData())
@@ -146,22 +140,17 @@ export class OutputComponent implements OnInit, AfterViewInit{
       p.quantity = product.quantity
       return p
     })
-    let ingredientsData = this.outputData().filter(item => !item.isProduct).map(product => {
+    let ingredientsData = this.outputData().filter(item => !item.isProduct).map(ingredient => {
       let p = new OutputData()
-      p.id = product.id
-      p.quantity = product.quantity
+      p.id = ingredient.id
+      p.quantity = ingredient.quantity
       return p
     })
+    console.log(productsData)
+    console.log(ingredientsData)
     this.outputService.createOutputProduct(productsData).subscribe({
       next: (res) => {
-        if (res) this.outputService.createOutputProduct(ingredientsData).subscribe({
-          next: (res) => {
-            if (res) {
-              this.outputData.set([])
-              this.productsDataSource = new MatTableDataSource(this.outputData())
-            }
-          }
-        })
+
       }
     })
 

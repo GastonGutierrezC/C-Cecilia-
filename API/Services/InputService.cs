@@ -12,25 +12,22 @@ public class InputService : IInputService
     private readonly IGenericRepository<Ingredient> _ingredientRepo;
     private readonly IGenericRepository<Input> _inputRepo;
     private readonly IGenericRepository<InputProducts> _inputProductRepo;
-    private readonly IGenericRepository<InputUser> _inputUserRepo;
 
     public InputService(
         IGenericRepository<Product> productRepo,
         IGenericRepository<ProductIngredients> productIngredientRepo,
         IGenericRepository<Ingredient> ingredientRepo,
         IGenericRepository<Input> inputRepo,
-        IGenericRepository<InputProducts> inputProductRepo,
-        IGenericRepository<InputUser> inputUserRepo)
+        IGenericRepository<InputProducts> inputProductRepo)
     {
         _productRepo = productRepo;
         _productIngredientRepo = productIngredientRepo;
         _ingredientRepo = ingredientRepo;
         _inputRepo = inputRepo;
         _inputProductRepo = inputProductRepo;
-        _inputUserRepo = inputUserRepo;
     }
 
-    public async Task<bool> RegisterInputProductoAsync(AutoInputProduct dto, int userId)
+    public async Task<bool> RegisterInputProductoAsync(AutoInputProduct dto)
     {
         var product = await _productRepo.GetByIdAsync(dto.ProductId);
         if (product == null)
@@ -56,14 +53,7 @@ public class InputService : IInputService
                 InputId = input.Id
             };
             await _inputProductRepo.AddAsync(inputProduct);
-
-            var inputUser = new InputUser
-            {
-                InputId = input.Id,
-                UserId = userId
-            };
-            await _inputUserRepo.AddAsync(inputUser);
-            return await _inputUserRepo.SaveChangesAsync();
+            return await _inputProductRepo.SaveChangesAsync();
         }
         else
         {
@@ -114,14 +104,73 @@ public class InputService : IInputService
             };
             await _inputProductRepo.AddAsync(inputProduct);
 
-            var inputUser = new InputUser
-            {
-                InputId = input.Id,
-                UserId = userId
-            };
-            await _inputUserRepo.AddAsync(inputUser);
-
-            return await _inputUserRepo.SaveChangesAsync();
+            return await _inputProductRepo.SaveChangesAsync();
         }
+    }
+
+    public async Task<bool> RegisterMultipleInputsAsync(List<AutoInputProduct> dtos)
+    {
+        var input = new Input { InputDate = DateTime.Now };
+        await _inputRepo.AddAsync(input);
+        await _inputRepo.SaveChangesAsync();
+
+        var allProductIngredients = await _productIngredientRepo.ListAllAsync();
+
+        foreach (var dto in dtos)
+        {
+            var product = await _productRepo.GetByIdAsync(dto.ProductId);
+            if (product == null)
+            {
+                throw new Exception($"Product with ID {dto.ProductId} does not exist.");
+            }
+
+            var ingredientsForProduct = allProductIngredients
+                .Where(pi => pi.ProductId == dto.ProductId)
+                .ToList();
+
+            bool isHomemade = ingredientsForProduct.Any();
+
+            if (isHomemade)
+            {
+                var requiredQuantities = new Dictionary<int, double>();
+                foreach (var recipe in ingredientsForProduct)
+                {
+                    double totalQuantity = recipe.Quantity * dto.Quantity;
+                    requiredQuantities[recipe.IngredientId] = totalQuantity;
+                }
+
+                foreach (var req in requiredQuantities)
+                {
+                    var ingredient = await _ingredientRepo.GetByIdAsync(req.Key);
+                    if (ingredient == null)
+                        throw new Exception($"Ingredient with ID {req.Key} not found.");
+
+                    if (ingredient.Quantity < req.Value)
+                        throw new Exception($"Not enough stock for ingredient ID {req.Key}. Required: {req.Value}, Available: {ingredient.Quantity}");
+                }
+
+                foreach (var req in requiredQuantities)
+                {
+                    var ingredient = await _ingredientRepo.GetByIdAsync(req.Key);
+                    if (ingredient == null)
+                        throw new Exception($"Ingredient with ID {req.Key} not found.");
+                    ingredient.Quantity -= req.Value;
+                    await _ingredientRepo.UpdateAsync(ingredient);
+                }
+            }
+
+            product.Quantity += dto.Quantity;
+            await _productRepo.UpdateAsync(product);
+
+            var inputProduct = new InputProducts
+            {
+                ProductId = dto.ProductId,
+                Quantity = dto.Quantity,
+                InputId = input.Id
+            };
+            await _inputProductRepo.AddAsync(inputProduct);
+        }
+
+        return await _inputProductRepo.SaveChangesAsync();
     }
 }

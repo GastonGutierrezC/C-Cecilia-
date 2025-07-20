@@ -3,7 +3,6 @@ using Core.DTOs.RequestDTOs;
 using Core.DTOs.ResponseDTOs;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;

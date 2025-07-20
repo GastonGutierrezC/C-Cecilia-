@@ -32,16 +32,30 @@ public class InputProductController(
     }
 
     [HttpPost]
-    public async Task<ActionResult<bool>> Create(AutoInputProduct dto, int userId)
+    public async Task<ActionResult<bool>> Create(AutoInputProduct dto)
     {
         try
         {
-            bool result = await _inputService.RegisterInputProductoAsync(dto, userId);
+            bool result = await _inputService.RegisterInputProductoAsync(dto);
             return Ok(result);
         }
         catch (Exception ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("register-multiple")]
+    public async Task<ActionResult<bool>> RegisterMultipleInputs([FromBody] List<AutoInputProduct> productos)
+    {
+        try
+        {
+            var result = await _inputService.RegisterMultipleInputsAsync(productos);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
         }
     }
 

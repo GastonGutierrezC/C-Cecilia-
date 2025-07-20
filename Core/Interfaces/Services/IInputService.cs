@@ -4,5 +4,6 @@ using Core.DTOs.RequestDTOs;
 
 public interface IInputService
 {
-    public Task<bool> RegisterInputProductoAsync(AutoInputProduct dto, int userId);
+    public Task<bool> RegisterInputProductoAsync(AutoInputProduct dto);
+    public Task<bool> RegisterMultipleInputsAsync(List<AutoInputProduct> dtos);
 }

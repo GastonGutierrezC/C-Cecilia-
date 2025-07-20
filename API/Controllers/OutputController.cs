@@ -4,6 +4,7 @@ using Core.DTOs.RequestDTOs;
 using Core.DTOs.ResponseDTOs;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Interfaces.Services;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,7 @@ namespace API.Controllers;
 [Route("[controller]")]
 public class OutputController(
     IGenericRepository<Output> repository,
-    IMapper mapper) : ControllerBase
+    IMapper mapper, IOutputService outputService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Output>>> Get()
@@ -55,4 +56,19 @@ public class OutputController(
         await repository.DeleteAsync(entity);
         return Ok(await repository.SaveChangesAsync());
     }
+    
+    [HttpPost("register-combined")]
+    public async Task<ActionResult<bool>> RegisterCombinedOutputs([FromBody] List<CreateOutputRequest> outputRequests)
+    {
+        try
+        {
+            var result = await outputService.RegisterOutputsAsync(outputRequests);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
 }

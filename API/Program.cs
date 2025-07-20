@@ -26,6 +26,7 @@ builder.Services.AddScoped<ISalesMetricsService, SalesMetricsService>();
 builder.Services.AddScoped<ISingleItemSalesMetricsService, SingleItemSalesMetricsService>();
 builder.Services.AddScoped<IOutputProductService, OutputProductService>();
 builder.Services.AddScoped<IOutputIngredientService, OutputIngredientService>();
+builder.Services.AddScoped<IOutputService, OutputService>();
 
 
 

@@ -42,7 +42,7 @@ public class OutputIngredientService : IOutputIngredientService
         {
             var ingredient = await _ingredientRepo.GetByIdAsync(request.Id);
             if (ingredient == null)
-                throw new Exception($"Product with ID {request.Id} does not exist.");
+                throw new Exception($"Ingredient with ID {request.Id} does not exist.");
 
             if (ingredient.Quantity < request.Quantity)
                 throw new Exception($"Insufficient quantity for product {ingredient.Name}. Available: {ingredient.Quantity}, Requested: {request.Quantity}");

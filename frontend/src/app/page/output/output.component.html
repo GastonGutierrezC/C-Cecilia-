@@ -1,0 +1,91 @@
+<div class="output-page">
+  <mat-tab-group >
+    <mat-tab label="Ingredientes">
+      <div class="output-tab">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre del ingrediente</mat-label>
+          <input type="text"
+                 placeholder=""
+                 matInput
+                 [formControl]="ingredientOutput.controls.ingredient"
+                 [value]="ingredientOutput.value.ingredient?.name ?? ''"
+                 [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            @for (option of ingredients; track option) {
+              <mat-option [value]="option">{{option.name}}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Cantidad({{ingredientOutput.value.ingredient?.ingredientUnit ?? '__'}})</mat-label>
+          <input matInput [formControl]="ingredientOutput.controls.quantity">
+        </mat-form-field>
+        <button mat-flat-button (click)="addIngredient()">
+          Añadir a la lista
+        </button>
+      </div>
+    </mat-tab>
+    <mat-tab label="productos">
+      <div class="output-tab">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre del producto</mat-label>
+          <input type="text"
+                 placeholder=""
+                 matInput
+                 [formControl]="productOutput.controls.product"
+                 [value]="productOutput.value.product?.name ?? ''"
+                 [matAutocomplete]="auto2">
+          <mat-autocomplete #auto2="matAutocomplete">
+            @for (option of products; track option) {
+              <mat-option [value]="option">{{option.name}}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Cantidad</mat-label>
+          <input matInput [formControl]="productOutput.controls.quantity" >
+        </mat-form-field>
+        <button mat-flat-button (click)="addProduct()">
+          Añadir a la lista
+        </button>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <div class="table-container-2">
+    <div class="table-container">
+      <table class="table-products" mat-table [dataSource]="productsDataSource" >
+        <ng-container matColumnDef="name" sticky>
+          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="isProduct">
+          <th mat-header-cell *matHeaderCellDef> Es producto </th>
+          <td mat-cell *matCellDef="let element"> {{element.isProduct ? 'SI' : 'NO'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="partialPrice">
+          <th mat-header-cell *matHeaderCellDef> Precio Parcial </th>
+          <td mat-cell *matCellDef="let element"> {{element.partialPrice}}(Bs) </td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+          <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+          <td (click)="removeSale(element)" mat-cell *matCellDef="let element"><mat-icon>delete</mat-icon></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">Añade productos o ingreddientes para verlos aqui</td>
+        </tr>
+      </table>
+
+    </div>
+    <mat-paginator class="table-products" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Selecciona pagina"></mat-paginator>
+    <h2>Total: {{totalPrice()}}</h2>
+    <button mat-flat-button (click)="sale()">Vender Lista</button>
+  </div>
+
+</div>

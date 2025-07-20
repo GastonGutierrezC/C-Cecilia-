@@ -176,7 +176,8 @@ public class HomemadeProductService : IHomemadeProductService
                 InPrice = product.InPrice,
                 SellPrice = product.SellPrice,
                 Image = product.Image,
-                Quantity = product.Quantity
+                Quantity = product.Quantity,
+                ProviderId= product.ProviderId
             };
             responseList.Add(new HomemadeProductGroupedResponse
             {

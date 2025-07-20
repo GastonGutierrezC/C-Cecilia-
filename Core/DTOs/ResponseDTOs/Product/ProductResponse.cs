@@ -8,4 +8,5 @@ public class ProductResponse
     public required double SellPrice { get; set; }
     public required string? Image { get; set; }
     public required double Quantity { get; set; }
+    public required int ProviderId { get; set; }
 }

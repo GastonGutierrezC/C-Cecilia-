@@ -17,6 +17,7 @@ public class BreadContext(DbContextOptions options) : DbContext(options)
     public DbSet<User> Users { get; set; }
     public DbSet<InputUser> InputUsers { get; set; }
     public DbSet<OutputUser> OutputUsers { get; set; }
+    public DbSet<Provider> Provider { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

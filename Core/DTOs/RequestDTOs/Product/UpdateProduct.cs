@@ -8,4 +8,5 @@ public class UpdateProduct
     public required double SellPrice { get; set; }
     public required string? Image { get; set; }
     public required double Quantity { get; set; }
+    public int ProviderId { get; set; }
 }

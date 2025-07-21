@@ -40,7 +40,7 @@ public class UserController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<ActionResult<string>> Login([FromBody] LoginUserDto loginDto)
+    public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginUserDto loginDto)
     {
         var token = await _authService.LoginAsync(loginDto);
 

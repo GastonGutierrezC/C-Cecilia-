@@ -3,21 +3,40 @@
   <h2>Bienvenido a su panel administrativo Carlos Zambrano</h2>
   <p>En este panel tendras acceso a las multiples funcionalidades para la gestion de inventario para la bodeha.</p>
 </div>
+<h2 class="home-text">Compra y Venta</h2>
+<div class="home-grid">
+  <button mat-stroked-button class="home-button" routerLink="/outputs">
+    <mat-icon>shopping_cart</mat-icon>
+    Ventas
+  </button>
+  <button mat-stroked-button class="home-button" routerLink="/inputs">
+    <mat-icon>store</mat-icon>
+    Compras
+  </button>
+</div>
+<h2 class="home-text">Productos</h2>
 <div class="home-grid">
   <button mat-stroked-button routerLink="/third-products" class="home-button">
-    <mat-icon class="material-symbols-outlined">deployed_code_update</mat-icon>
+    <mat-icon class="material-symbols-outlined">grocery</mat-icon>
     Productos de terceros
   </button>
   <button mat-stroked-button class="home-button" routerLink="ingredients">
-    <mat-icon>store</mat-icon>
+    <mat-icon>grain</mat-icon>
     Ingedientes
   </button>
   <button mat-stroked-button class="home-button" routerLink="/homemade-products">
-    <mat-icon>store</mat-icon>
+    <mat-icon class="material-symbols-outlined">oven_gen</mat-icon>
     Productos caseros
   </button>
+</div>
+<h2 class="home-text">Metricas</h2>
+<div class="home-grid">
   <button mat-stroked-button class="home-button" routerLink="/outputs">
-    <mat-icon>store</mat-icon>
-    Ventas
+    <mat-icon class="material-symbols-outlined">finance_mode</mat-icon>
+    Metricas economicas
+  </button>
+  <button mat-stroked-button class="home-button" routerLink="/inputs">
+    <mat-icon>bar_chart_4_bars</mat-icon>
+    Metricas de stock
   </button>
 </div>

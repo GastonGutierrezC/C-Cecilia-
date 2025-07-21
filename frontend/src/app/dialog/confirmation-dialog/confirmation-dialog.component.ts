@@ -17,5 +17,5 @@ class DialogAnimationsExampleDialog {
   styleUrl: './confirmation-dialog.component.scss'
 })
 export class ConfirmationDialogComponent {
-  readonly dialogRef = inject(MatDialogRef<DialogAnimationsExampleDialog>);
+  readonly dialogRef = inject(MatDialogRef<ConfirmationDialogComponent>);
 }

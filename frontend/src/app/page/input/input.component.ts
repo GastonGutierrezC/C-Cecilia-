@@ -1,0 +1,150 @@
+import {AfterViewInit, Component, computed, inject, OnInit, signal, viewChild} from '@angular/core';
+import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
+import {MatButton} from "@angular/material/button";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow, MatRowDef, MatTable, MatTableDataSource
+} from "@angular/material/table";
+import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {ProductService} from '../../service/product-service';
+import {IngredientService} from '../../service/ingredient-service';
+import {OutputService} from '../../service/output-service';
+import {ProductModel} from '../../models/products';
+import {IngredientModel} from '../../models/ingredient';
+import {OutputData, OutputInfo} from '../../models/output';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatIcon} from '@angular/material/icon';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmationDialogComponent} from '../../dialog/confirmation-dialog/confirmation-dialog.component';
+import {CompleteTaskComponent} from '../../dialog/complete-task/complete-task.component';
+import {InputService} from '../../service/input-service';
+
+@Component({
+  selector: 'app-input',
+  imports: [
+    MatAutocomplete,
+    MatAutocompleteTrigger,
+    MatButton,
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatFormField,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatIcon,
+    MatInput,
+    MatLabel,
+    MatOption,
+    MatPaginator,
+    MatRow,
+    MatRowDef,
+    MatTab,
+    MatTabGroup,
+    MatTable,
+    ReactiveFormsModule,
+    MatHeaderCellDef
+  ],
+  templateUrl: './input.component.html',
+  styleUrl: './input.component.scss'
+})
+export class InputComponent implements OnInit, AfterViewInit{
+  productService = inject(ProductService)
+  ingredientService = inject(IngredientService)
+  inputService = inject(InputService)
+  products: ProductModel[] = []
+  ingredients: IngredientModel[] = []
+  readonly dialog = inject(MatDialog);
+  ingredientOutput = new FormGroup({
+    ingredient: new FormControl<IngredientModel | null>(null, [Validators.required]),
+    quantity: new FormControl<number>(0, [Validators.required])
+  })
+  productOutput = new FormGroup({
+    product: new FormControl<ProductModel | null>(null, [Validators.required]),
+    quantity: new FormControl<number>(0, [Validators.required])
+  })
+  inputData = signal<OutputInfo[]>([])
+  columns: string[] = ['name', 'partialPrice', 'quantity', 'isProduct', 'delete']
+  productsDataSource: MatTableDataSource<OutputInfo> = new MatTableDataSource<OutputInfo>();
+  paginator = viewChild.required(MatPaginator);
+
+  ngOnInit() {
+    this.productService.getProducts().subscribe(products => {
+      this.products = products;
+    })
+    this.ingredientService.getIngredients().subscribe(ingredients => {
+      this.ingredients = ingredients;
+    })
+  }
+  ngAfterViewInit() {
+    this.productsDataSource = new MatTableDataSource(this.inputData())
+    this.productsDataSource.paginator = this.paginator()
+  }
+
+  addProduct() {
+    if (this.productOutput.value.product
+      && this.productOutput.value.quantity !== null
+      && this.productOutput.value.quantity !== undefined
+    ) {
+      this.inputData.set(
+        this.inputData().concat({
+          id: this.productOutput.value.product.id,
+          name: this.productOutput.value.product.name,
+          isProduct: true,
+          quantity: this.productOutput.value.quantity,
+          partialPrice: this.productOutput.value.quantity * this.productOutput.value.product.sellPrice
+        }))
+      this.productsDataSource = new MatTableDataSource(this.inputData())
+    }
+  }
+
+  addIngredient() {
+    if (this.ingredientOutput.value.ingredient
+      && this.ingredientOutput.value.quantity !== null
+      && this.ingredientOutput.value.quantity !== undefined
+    ) {
+      this.inputData.set(
+        this.inputData().concat({
+          id: this.ingredientOutput.value.ingredient.id,
+          name: this.ingredientOutput.value.ingredient.name,
+          isProduct: false,
+          quantity: this.ingredientOutput.value.quantity,
+          partialPrice: this.ingredientOutput.value.quantity * this.ingredientOutput.value.ingredient.sellPrice
+        }))
+      this.productsDataSource = new MatTableDataSource(this.inputData())
+    }
+  }
+
+  totalPrice = computed<number>(() => {
+    return this.inputData().reduce((init, value)=> init += value.partialPrice, 0)
+  })
+  removeSale(product: OutputInfo) {
+    this.inputData.set(this.inputData().filter(item => item.id !== product.id))
+    this.productsDataSource = new MatTableDataSource(this.inputData())
+  }
+
+  registerInputs() {
+
+    let data = this.inputData().map(product => {
+      let p = new OutputData()
+      p.id = product.id
+      p.quantity = product.quantity
+      p.isProduct = product.isProduct
+      return p
+    })
+    this.inputService.createInputProductAndIngredients(data).subscribe({
+      next: (res) => {
+        if (res) this.dialog.open(CompleteTaskComponent, {
+          data: "Compra registrada con exito"
+        })
+      }
+    })
+  }
+}

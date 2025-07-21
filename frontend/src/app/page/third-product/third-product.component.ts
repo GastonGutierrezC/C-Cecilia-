@@ -24,6 +24,8 @@ import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-third-product.component';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {ProviderComponent} from '../../sheet/provider/provider.component';
 
 @Component({
   selector: 'app-third-product',
@@ -58,9 +60,6 @@ import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-th
     MatHeaderRowDef,
     MatCellDef,
     MatRowDef,
-    MatMenu,
-    MatMenuItem,
-    MatMenuTrigger,
     MatError,
     MatHint
   ],
@@ -84,6 +83,7 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
     inPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
     sellPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
   })
+  private bottomSheet = inject(MatBottomSheet);
 
 
   paginator = viewChild.required(MatPaginator);
@@ -152,7 +152,8 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
         inPrice: this.productForm.value.inPrice,
         sellPrice: this.productForm.value.sellPrice,
         image: this.image64,
-        quantity: 0
+        quantity: 0,
+        providerId: 1
       }).subscribe(res => {
         this.productService.getProducts().subscribe(products => {
           this.products = products;
@@ -201,5 +202,8 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
         }
       }
     })
+  }
+  openBottomSheet(): void {
+    this.bottomSheet.open<ProviderComponent>(ProviderComponent);
   }
 }

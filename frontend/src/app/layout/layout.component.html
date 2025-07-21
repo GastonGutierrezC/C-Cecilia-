@@ -3,7 +3,7 @@
     <img class="logo" src="logo.png" alt="logo" routerLink="/"/>
   </div>
   <div>
-    <mat-icon>person</mat-icon>
+    <mat-icon (click)="login()">person</mat-icon>
     <h2 [matMenuTriggerFor]="menu">User Name</h2>
     <mat-menu class="layout-menu" #menu="matMenu">
       <button mat-menu-item><mat-icon>help</mat-icon>Ayuda</button>

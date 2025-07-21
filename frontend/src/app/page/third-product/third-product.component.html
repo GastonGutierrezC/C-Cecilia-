@@ -1,4 +1,3 @@
-
 <div class="third-products-page">
 
   <div class="button-actions">
@@ -44,6 +43,9 @@
     <button mat-stroked-button (click)="tableView = !tableView">{{tableView ? 'cambiar a mosaico' : 'cambiar a tabla'}}</button>
   </div>
 
+  <div class="button-actions">
+    <button mat-stroked-button (click)="openBottomSheet()">Proveedores</button>
+  </div>
   @if (tableView) {
     <div class="searcher">
       <mat-form-field appearance="outline">

@@ -11,4 +11,5 @@ export interface OutputInfo {
 export class OutputData {
   id: number = 0;
   quantity: number = 0;
+  isProduct: boolean = false;
 }

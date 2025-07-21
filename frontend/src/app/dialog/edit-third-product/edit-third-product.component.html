@@ -24,6 +24,14 @@
         <mat-error>El precio de venta es <strong>requerido</strong></mat-error>
       }
     </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Proovedor</mat-label>
+      <mat-select [formControl]="productForm.controls.providerId">
+        @for (provider of providers; track $index){
+          <mat-option [value]="provider.id">{{provider.name}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
     <input #productUpload class="upload-product-image-input" type="file" accept=".png, .jpg" (change)="convertToBase64($event)"/>
     <button mat-stroked-button (click)="productUpload.click()" matIconSuffix>Subir imagen<mat-icon>upload</mat-icon></button>
     @if (image64) {

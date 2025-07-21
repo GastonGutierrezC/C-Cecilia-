@@ -7,7 +7,14 @@ import {MatOption} from '@angular/material/core';
 import {MatSelect} from '@angular/material/select';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatIcon} from '@angular/material/icon';
-import {MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle} from '@angular/material/card';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardFooter,
+  MatCardHeader,
+  MatCardSubtitle,
+  MatCardTitle
+} from '@angular/material/card';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmationDialogComponent} from '../../dialog/confirmation-dialog/confirmation-dialog.component';
 import {ResizeImageDialogComponent} from '../../dialog/resize-image-dialog/resize-image-dialog.component';
@@ -26,6 +33,8 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-third-product.component';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {ProviderComponent} from '../../sheet/provider/provider.component';
+import {ProviderService} from '../../service/provider-service';
+import {ProviderModel} from '../../models/provider';
 
 @Component({
   selector: 'app-third-product',
@@ -61,7 +70,8 @@ import {ProviderComponent} from '../../sheet/provider/provider.component';
     MatCellDef,
     MatRowDef,
     MatError,
-    MatHint
+    MatHint,
+    MatCardSubtitle
   ],
   templateUrl: './third-product.component.html',
   styleUrl: './third-product.component.scss'
@@ -69,9 +79,11 @@ import {ProviderComponent} from '../../sheet/provider/provider.component';
 export class ThirdProductComponent implements OnInit, AfterViewInit{
   onCreationMode = false
   tableView = true
-  columns: string[] = ['name', 'inPrice', 'sellPrice', 'quantity', 'delete', 'edit']
+  columns: string[] = ['name', 'providerId', 'inPrice', 'sellPrice', 'quantity', 'delete', 'edit']
   dataSource: MatTableDataSource<ProductModel> = new MatTableDataSource<ProductModel>();
   productService = inject(ProductService)
+  providerService = inject(ProviderService)
+  providers: ProviderModel[] = []
   products:  ProductModel[] = [];
   image64?: string;
   fileName?: string;
@@ -82,6 +94,7 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
     name: new FormControl('', [Validators.required]),
     inPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
     sellPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
+    providerId: new FormControl(0, [Validators.required]),
   })
   private bottomSheet = inject(MatBottomSheet);
 
@@ -115,6 +128,11 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
       this.dataSource.paginator = this.paginator()
       this.dataSource.sort = this.sort()
     })
+    this.providerService.getProviders().subscribe({
+      next: (providers) => {
+        this.providers = providers;
+      }
+    })
   }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -132,6 +150,12 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
       this.dataSource.paginator = this.paginator()
       this.dataSource.sort = this.sort()
     })
+
+    this.providerService.getProviders().subscribe({
+      next: (providers) => {
+        this.providers = providers;
+      }
+    })
   }
 
   filter(){
@@ -146,6 +170,8 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
     && this.productForm.value.sellPrice !== undefined
     && this.productForm.value.name !== undefined
     && this.productForm.value.inPrice !== undefined
+    && this.productForm.value.providerId !== null
+    && this.productForm.value.providerId !== undefined
     && this.image64) {
       this.productService.createProduct({
         name: this.productForm.value.name,
@@ -153,7 +179,7 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
         sellPrice: this.productForm.value.sellPrice,
         image: this.image64,
         quantity: 0,
-        providerId: 1
+        providerId: this.productForm.value.providerId,
       }).subscribe(res => {
         this.productService.getProducts().subscribe(products => {
           this.products = products;
@@ -164,6 +190,12 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
 
           this.dataSource.paginator = this.paginator()
           this.dataSource.sort = this.sort()
+        })
+
+        this.providerService.getProviders().subscribe({
+          next: (providers) => {
+            this.providers = providers;
+          }
         })
       })
     }
@@ -180,6 +212,12 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
             this.filteredProducts = products;
             this.dataSource.paginator = this.paginator()
             this.dataSource.sort = this.sort()
+          })
+
+          this.providerService.getProviders().subscribe({
+            next: (providers) => {
+              this.providers = providers;
+            }
           })
         })
       }
@@ -199,11 +237,21 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
             this.dataSource.paginator = this.paginator()
             this.dataSource.sort = this.sort()
           })
+
+          this.providerService.getProviders().subscribe({
+            next: (providers) => {
+              this.providers = providers;
+            }
+          })
         }
       }
     })
   }
   openBottomSheet(): void {
     this.bottomSheet.open<ProviderComponent>(ProviderComponent);
+  }
+
+  getProviderNameById(id: number) {
+    return this.providers.find(provider => provider.id == id)!.name;
   }
 }

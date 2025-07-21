@@ -13,6 +13,10 @@ import {MatError, MatFormField, MatHint, MatInput, MatLabel, MatSuffix} from '@a
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ResizeImageDialogComponent} from '../resize-image-dialog/resize-image-dialog.component';
 import {MatIcon} from '@angular/material/icon';
+import {ProviderService} from '../../service/provider-service';
+import {ProviderModel} from '../../models/provider';
+import {MatOption} from '@angular/material/core';
+import {MatSelect} from '@angular/material/select';
 
 @Component({
   selector: 'app-edit-third-product',
@@ -29,7 +33,9 @@ import {MatIcon} from '@angular/material/icon';
     MatSuffix,
     MatIcon,
     MatError,
-    MatHint
+    MatHint,
+    MatOption,
+    MatSelect,
   ],
   templateUrl: './edit-third-product.component.html',
   styleUrl: './edit-third-product.component.scss'
@@ -40,14 +46,22 @@ export class EditThirdProductComponent implements OnInit{
   readonly dialog = inject(MatDialog);
   fileName?: string;
   productService = inject(ProductService)
+  providerService = inject(ProviderService);
+  providers: ProviderModel[] = []
   productForm = new FormGroup({
     name: new FormControl(this.data.name, [Validators.required]),
     inPrice: new FormControl(this.data.inPrice, [Validators.required, Validators.min(0)]),
     sellPrice: new FormControl(this.data.sellPrice, [Validators.required, Validators.min(0)]),
+    providerId: new FormControl(this.data.providerId, Validators.required),
   })
 
   ngOnInit() {
     this.image64 = this.data.image;
+    this.providerService.getProviders().subscribe({
+      next: (providers: ProviderModel[]) => {
+        this.providers = providers;
+      }
+    })
   }
 
   convertToBase64(event: any) {
@@ -75,6 +89,8 @@ export class EditThirdProductComponent implements OnInit{
       && this.productForm.value.sellPrice !== undefined
       && this.productForm.value.name !== undefined
       && this.productForm.value.inPrice !== undefined
+      && this.productForm.value.providerId !== null
+      && this.productForm.value.providerId !== undefined
       && this.image64) {
       this.productService.editProduct({
         id: this.data.id,
@@ -83,7 +99,7 @@ export class EditThirdProductComponent implements OnInit{
         sellPrice: this.productForm.value.sellPrice,
         image: this.image64,
         quantity: 0,
-        providerId: 1
+        providerId: this.productForm.value.providerId,
       }).subscribe(res => {
         this.dialogRef.close(res)
       })

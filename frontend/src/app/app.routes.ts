@@ -4,6 +4,7 @@ import {ThirdProductComponent} from './page/third-product/third-product.componen
 import {IngredientComponent} from './page/ingredient/ingredient.component';
 import {HomemadeProductsComponent} from './page/homemade-products/homemade-products.component';
 import {OutputComponent} from './page/output/output.component';
+import {InputComponent} from './page/input/input.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -11,4 +12,5 @@ export const routes: Routes = [
   { path: 'ingredients', component: IngredientComponent },
   { path: 'homemade-products', component: HomemadeProductsComponent },
   { path: 'outputs', component: OutputComponent },
+  { path: 'inputs', component: InputComponent },
 ];

@@ -26,6 +26,8 @@ import {AsyncPipe} from '@angular/common';
 import {Observable, startWith} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {OutputService} from '../../service/output-service';
+import {MatDialog} from '@angular/material/dialog';
+import {CompleteTaskComponent} from '../../dialog/complete-task/complete-task.component';
 
 @Component({
   selector: 'app-output',
@@ -63,7 +65,7 @@ export class OutputComponent implements OnInit, AfterViewInit{
   outputService = inject(OutputService)
   products: ProductModel[] = []
   ingredients: IngredientModel[] = []
-  options: ProductModel[] = []
+  readonly dialog = inject(MatDialog);
   ingredientOutput = new FormGroup({
     ingredient: new FormControl<IngredientModel | null>(null, [Validators.required]),
     quantity: new FormControl<number>(0, [Validators.required])
@@ -134,27 +136,20 @@ export class OutputComponent implements OnInit, AfterViewInit{
 
   sale() {
 
-    let productsData = this.outputData().filter(item => item.isProduct).map(product => {
+    let data = this.outputData().map(product => {
       let p = new OutputData()
       p.id = product.id
       p.quantity = product.quantity
+      p.isProduct = product.isProduct
       return p
     })
-    let ingredientsData = this.outputData().filter(item => !item.isProduct).map(ingredient => {
-      let p = new OutputData()
-      p.id = ingredient.id
-      p.quantity = ingredient.quantity
-      return p
-    })
-    console.log(productsData)
-    console.log(ingredientsData)
-    this.outputService.createOutputProduct(productsData).subscribe({
+    this.outputService.createOutputProductAndIngredients(data).subscribe({
       next: (res) => {
-
+        if (res) this.dialog.open(CompleteTaskComponent, {
+          data: "Venta registrada con exito"
+        })
       }
     })
-
-
   }
 }
 

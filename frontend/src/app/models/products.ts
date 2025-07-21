@@ -5,6 +5,7 @@ export interface ProductModel {
   sellPrice: number;
   image: string;
   quantity: number;
+  providerId: number;
 }
 
 export interface ProductData {
@@ -13,4 +14,5 @@ export interface ProductData {
   sellPrice: number;
   image: string;
   quantity: number;
+  providerId: number;
 }

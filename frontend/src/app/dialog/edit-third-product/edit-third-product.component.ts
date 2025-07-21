@@ -82,7 +82,8 @@ export class EditThirdProductComponent implements OnInit{
         inPrice: this.productForm.value.inPrice,
         sellPrice: this.productForm.value.sellPrice,
         image: this.image64,
-        quantity: 0
+        quantity: 0,
+        providerId: 1
       }).subscribe(res => {
         this.dialogRef.close(res)
       })

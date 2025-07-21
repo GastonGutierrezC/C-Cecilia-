@@ -117,7 +117,8 @@ export class EditHomemadeProductComponent implements OnInit {
           inPrice: this.productForm.value.inPrice,
           sellPrice: this.productForm.value.sellPrice,
           image: this.image64,
-          quantity: this.data.product.quantity
+          quantity: this.data.product.quantity,
+          providerId: 1
         },
         ingredients: this.newProductIngredients
       }).subscribe(res => {

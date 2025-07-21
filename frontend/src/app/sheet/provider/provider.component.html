@@ -1,0 +1,44 @@
+<mat-tab-group>
+  <mat-tab label="Crear proveedor">
+    <div class="providers-form">
+      <mat-form-field appearance="outline" >
+        <mat-label>Nombre</mat-label>
+        <input matInput type="text" [formControl]="createProviderForm.controls.name">
+      </mat-form-field>
+      <mat-form-field appearance="outline" >
+        <mat-label>Monto Objetivo</mat-label>
+        <input matInput type="number" [formControl]="createProviderForm.controls.objectiveMount">
+      </mat-form-field>
+      <button mat-flat-button (click)="createProvider()">Crear Proovedor</button>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Proveedores">
+    <div class="providers-tab">
+      @if (editMode) {
+        <div class="providers-form">
+          <mat-form-field appearance="outline" >
+            <mat-label>Nombre</mat-label>
+            <input matInput type="text" [formControl]="editProviderForm.controls.name">
+          </mat-form-field>
+          <mat-form-field appearance="outline" >
+            <mat-label>Monto Objetivo</mat-label>
+            <input matInput type="number" [formControl]="editProviderForm.controls.objectiveMount">
+          </mat-form-field>
+          <button mat-flat-button (click)="editProvider()">Editar Proovedor</button>
+        </div>
+      }
+      <mat-list>
+        <div mat-subheader>Proveedores</div>
+        @for (provider of providers; track $index){
+          <mat-list-item>
+            <div matListItemTitle>{{provider.name}}</div>
+            <div matListItemLine>{{provider.objetiveMount}}Bs</div>
+            <div (click)="entryEditMode(provider)" matListItemIcon><mat-icon>edit</mat-icon></div>
+          </mat-list-item>
+        }
+      </mat-list>
+    </div>
+
+  </mat-tab>
+</mat-tab-group>

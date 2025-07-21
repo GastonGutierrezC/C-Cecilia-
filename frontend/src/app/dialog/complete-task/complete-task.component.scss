@@ -1,0 +1,31 @@
+@use '../../../styles' as styles;
+
+.dialog {
+  width: 30rem;
+  max-width: 30rem;
+  aspect-ratio: 1;
+  background-color: styles.$background-secondary;
+}
+
+.water-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-text {
+  top: 12rem;
+  z-index: 1;
+  position: absolute;
+  font-family: Arima, serif;
+}
+.water-mark {
+  opacity: 70%;
+  width: 30rem;
+  max-width: 30rem;
+  aspect-ratio: 1;
+  position: absolute;
+  top: 0;
+  z-index: 0;
+}

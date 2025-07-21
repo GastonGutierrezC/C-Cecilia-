@@ -10,6 +10,8 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {RouterLink} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {LoginComponent} from '../dialog/login/login.component';
 
 @Component({
   selector: 'app-layout',
@@ -31,4 +33,9 @@ import {RouterLink} from '@angular/router';
 export class LayoutComponent {
 
   protected readonly window = window;
+
+  dialog = inject(MatDialog);
+  login() {
+    this.dialog.open(LoginComponent, {})
+  }
 }

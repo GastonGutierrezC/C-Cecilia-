@@ -15,13 +15,12 @@
 }
 
 .home-grid {
-
-  padding: 1rem;
+  padding: 0 1rem;
   display: flex;
   flex-direction: row;
   place-content: center;
   flex-wrap:  wrap;
-  gap: 1rem;
+  gap: 4rem;
   .home-button {
     color: black;
     width: 10rem;

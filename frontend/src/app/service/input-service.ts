@@ -6,13 +6,13 @@ import {OutputData} from '../models/output';
 @Injectable({
   providedIn: 'root'
 })
-export class OutputService {
+export class InputService {
 
   private http = inject(HttpClient);
   api = environment.baseApiUrl;
 
-  createOutputProductAndIngredients(data: OutputData[]){
-    return this.http.post<boolean>(this.api + '/Output/register-combined', data);
+  createInputProductAndIngredients(data: OutputData[]){
+    return this.http.post<boolean>(this.api + '/input/register', data);
   }
 
 }

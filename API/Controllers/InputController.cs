@@ -7,9 +7,10 @@ using Core.Interfaces;
 using Core.Interfaces.Services;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 namespace API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class InputController: ControllerBase

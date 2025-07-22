@@ -2,12 +2,19 @@
   <div>
     <img class="logo" src="logo.png" alt="logo" routerLink="/"/>
   </div>
-  <div>
-    <mat-icon (click)="login()">person</mat-icon>
-    <h2 [matMenuTriggerFor]="menu">User Name</h2>
+  <div [matMenuTriggerFor]="menu">
+    <mat-icon >person</mat-icon>
+    <h2 >{{ data?.Username ?? '' }}</h2>
+
     <mat-menu class="layout-menu" #menu="matMenu">
       <button mat-menu-item><mat-icon>help</mat-icon>Ayuda</button>
-      <button mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
+
+      @if (!data) {
+        <button (click)="login()" mat-menu-item><mat-icon>login</mat-icon>Abrir Sesión</button>
+      } @else {
+        <button (click)="logout()" mat-menu-item><mat-icon>logout</mat-icon>Cerrar Sesión</button>
+      }
+
     </mat-menu>
   </div>
 </mat-toolbar>

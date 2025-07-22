@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -12,6 +12,8 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginComponent} from '../dialog/login/login.component';
+import {UserService} from '../service/user-service';
+import {TokenData} from '../models/user';
 
 @Component({
   selector: 'app-layout',
@@ -23,19 +25,32 @@ import {LoginComponent} from '../dialog/login/login.component';
     MatSidenavModule,
     MatListModule,
     MatIconModule,
-    AsyncPipe,
     MatMenu,
     MatMenuTrigger,
     MatMenuItem,
     RouterLink,
   ]
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit{
 
   protected readonly window = window;
-
+  userService = inject(UserService);
+  data: TokenData | undefined = undefined
   dialog = inject(MatDialog);
+  ngOnInit() {
+    this.data = this.userService.getTokenData()
+  }
+
+
   login() {
-    this.dialog.open(LoginComponent, {})
+    this.dialog.open(LoginComponent, {}).afterClosed().subscribe({
+      next: () => {
+      }
+    });
+
+  }
+
+  logout() {
+    this.userService.logout()
   }
 }

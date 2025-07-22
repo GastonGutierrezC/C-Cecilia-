@@ -2,12 +2,12 @@
   <div class="login-form">
     <mat-form-field appearance="outline">
       <mat-label>Nombre de usuario</mat-label>
-      <input matInput>
+      <input matInput [formControl]="userForm.controls.username">
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>
-      <input matInput>
+      <input matInput [formControl]="userForm.controls.email">
     </mat-form-field>
-    <button mat-flat-button>iniciar sesion</button>
+    <button mat-flat-button (click)="login()">iniciar sesion</button>
   </div>
 </mat-dialog-content>

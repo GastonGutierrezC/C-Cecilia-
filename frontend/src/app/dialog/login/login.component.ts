@@ -1,6 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {MatDialogContent, MatDialogRef} from '@angular/material/dialog';
 import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
+
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {UserService} from "../../service/user-service";
@@ -14,8 +15,10 @@ import {UserService} from "../../service/user-service";
     MatInput,
     MatFormField,
     MatLabel,
+
     MatButton,
     ReactiveFormsModule
+
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -23,11 +26,14 @@ import {UserService} from "../../service/user-service";
 export class LoginComponent {
   readonly dialogRef = inject(MatDialogRef<LoginComponent>);
 
+
   userService = inject(UserService);
+
   userForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
     username: new FormControl<string>('', [Validators.required]),
   })
+
 
     login() {
       if (this.userForm.valid

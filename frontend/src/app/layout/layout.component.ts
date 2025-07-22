@@ -12,8 +12,10 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginComponent} from '../dialog/login/login.component';
+
 import {UserService} from '../service/user-service';
 import {TokenData} from '../models/user';
+
 
 @Component({
   selector: 'app-layout',
@@ -34,6 +36,7 @@ import {TokenData} from '../models/user';
 export class LayoutComponent implements OnInit{
 
   protected readonly window = window;
+
   userService = inject(UserService);
   data: TokenData | undefined = undefined
   dialog = inject(MatDialog);

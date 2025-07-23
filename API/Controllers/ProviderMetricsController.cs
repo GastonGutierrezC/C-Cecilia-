@@ -12,11 +12,11 @@ namespace API.Controllers;
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class MetricsController : ControllerBase
+    public class ProviderMetricsController : ControllerBase
     {
         private readonly IProviderMetricsService _providerMetricsService;
 
-        public MetricsController(IProviderMetricsService providerMetricsService)
+        public ProviderMetricsController(IProviderMetricsService providerMetricsService)
         {
             _providerMetricsService = providerMetricsService;
         }

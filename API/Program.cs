@@ -58,6 +58,7 @@ builder.Services.AddScoped<IInputService, InputService>();
 builder.Services.AddScoped<IExternalProductService, ExternalProductService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IProviderMetricsService, ProviderMetricsService>();
 
 
 

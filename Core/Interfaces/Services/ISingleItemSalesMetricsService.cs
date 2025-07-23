@@ -4,6 +4,6 @@ namespace Core.Interfaces.Services;
 
 public interface ISingleItemSalesMetricsService
 {
-    Task<List<SingleItemSalesMetricDto>> GetSalesByDateAndItemNameAsync(DateOnly startDate, DateOnly endDate, int itemId);
+    Task<List<ProductSalesSeriesDto>> GetSalesByDateAndItemNameAsync(DateOnly startDate, DateOnly endDate, int itemId);
 
 }

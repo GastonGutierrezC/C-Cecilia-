@@ -1,6 +1,6 @@
 namespace Core.DTOs.ResponseDTOs;
 
-public class SalesMetricsDto
+public class SalesMetricsDto2
 {
     public DateOnly Date { get; set; }
     public double ProductSalesTotal { get; set; }

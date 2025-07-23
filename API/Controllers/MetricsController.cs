@@ -22,7 +22,7 @@ namespace API.Controllers;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProviderSalesSummaryDto>>> GetProviderMonthlySummary(int month, string providerName)
+        public async Task<ActionResult<List<ProviderSeriesDto>>> GetProviderMonthlySummary(int month, string providerName)
         {
             if (month < 1 || month > 12)
                 return BadRequest("Invalid month. Must be between 1 and 12.");

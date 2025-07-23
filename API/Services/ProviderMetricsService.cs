@@ -29,7 +29,7 @@ namespace API.Services
             _providerRepository = providerRepository;
         }
 
-public async Task<List<ProviderSalesSummaryDto>> GetMonthlyProviderSummariesAsync(int month, string providerName)
+public async Task<List<ProviderSeriesDto>> GetMonthlyProviderSummariesAsync(int month, string providerName)
 {
     int year = DateTime.Today.Year;
 
@@ -39,8 +39,7 @@ public async Task<List<ProviderSalesSummaryDto>> GetMonthlyProviderSummariesAsyn
         .ToList();
 
     if (!selectedProviders.Any())
-        return new List<ProviderSalesSummaryDto>(); 
-
+        return new List<ProviderSeriesDto>();
 
     var outputs = await _outputRepository.ListAllAsync();
     var filteredOutputs = outputs
@@ -60,7 +59,7 @@ public async Task<List<ProviderSalesSummaryDto>> GetMonthlyProviderSummariesAsyn
     int daysInMonth = DateTime.DaysInMonth(year, month);
     int daysElapsed = (today.Year == year && today.Month == month) ? today.Day : daysInMonth;
 
-    var result = new List<ProviderSalesSummaryDto>();
+    var result = new List<ProviderSeriesDto>();
 
     foreach (var provider in selectedProviders)
     {
@@ -99,13 +98,13 @@ public async Task<List<ProviderSalesSummaryDto>> GetMonthlyProviderSummariesAsyn
             {
                 dailySalesList.Add(new DailySalesEntry
                 {
-                    Date = group.Key,
-                    Amount = dailyTotal
+                    Name = group.Key.ToString("yyyy-MM-dd"),
+                    Value = dailyTotal
                 });
             }
         }
 
-        double accumulated = dailySalesList.Sum(d => d.Amount);
+        double accumulated = dailySalesList.Sum(d => d.Value);
         double percentageAchieved = provider.ObjetiveMount > 0
             ? (accumulated / provider.ObjetiveMount) * 100
             : 0;
@@ -123,16 +122,16 @@ public async Task<List<ProviderSalesSummaryDto>> GetMonthlyProviderSummariesAsyn
             ? (provider.ObjetiveMount - accumulated) / daysRemaining
             : 0;
 
-        var summary = new ProviderSalesSummaryDto
+        var summary = new ProviderSeriesDto
         {
-            ProviderName = provider.Name,
-            TargetAmount = provider.ObjetiveMount,
-            AccumulatedToDate = accumulated,
-            PercentageAchieved = percentageAchieved,
-            ClosingTrend = closingTrend,
-            TrendPercentage = trendPercentage,
-            RequiredDailySales = requiredDailySales,
-            DailySales = dailySalesList.OrderBy(d => d.Date).ToList()
+            ProviderName = new ProviderNameDto { Name = provider.Name },
+            TargetAmount = new TargetAmountDto { Name = "Monto objetivo", Value = provider.ObjetiveMount },
+            AccumulatedToDate = new AccumulatedToDateDto { Name = "Acumulado hasta la fecha", Value = accumulated },
+            PercentageAchieved = new PercentageAchievedDto { Name = "Porcentaje alcanzado", Value = percentageAchieved },
+            ClosingTrend = new ClosingTrendDto { Name = "Tendencia de cierre", Value = closingTrend },
+            TrendPercentage = new TrendPercentageDto { Name = "Porcentaje de tendencia", Value = trendPercentage },
+            RequiredDailySales = new RequiredDailySalesDto { Name = "Ventas diarias requeridas", Value = requiredDailySales },
+            Series = dailySalesList.OrderBy(d => d.Name).ToList()
         };
 
         result.Add(summary);

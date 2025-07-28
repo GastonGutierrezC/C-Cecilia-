@@ -16,17 +16,22 @@ public class ProductIngredientController : ControllerBase
     private readonly IGenericRepository<ProductIngredients> _repository;
     private readonly IHomemadeProductService _service;
     private readonly IMapper _mapper;
-    IExternalProductService _externalProductService;
+    private readonly IExternalProductService _externalProductService;
+    private readonly IProductIngredientService _productIngredientService;
+
 
     public ProductIngredientController(
         IGenericRepository<ProductIngredients> repository,
         IMapper mapper,
-        IHomemadeProductService service, IExternalProductService externalProductService)
+        IHomemadeProductService service,
+        IExternalProductService externalProductService,
+        IProductIngredientService productIngredientService)
     {
         _repository = repository;
         _mapper = mapper;
         _service = service;
         _externalProductService = externalProductService;
+        _productIngredientService = productIngredientService;
     }
 
     [HttpGet]
@@ -75,7 +80,7 @@ public class ProductIngredientController : ControllerBase
         var saved = await _repository.SaveChangesAsync();
         return Ok(saved);
     }
-    
+
     [HttpGet("homemade")]
     public async Task<ActionResult<List<HomemadeProductGroupedResponse>>> GetHomemadeProducts()
     {
@@ -118,6 +123,21 @@ public class ProductIngredientController : ControllerBase
                 return BadRequest("No se pudo eliminar el producto.");
 
             return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+    
+    [HttpGet("all-items")]
+    public async Task<ActionResult<List<ProductIngredientSimpleResponse>>> GetAllProductsAndIngredients()
+    {
+        try
+        {
+            var result = await _productIngredientService.GetAllProductsAndIngredientsAsync();
+
+            return Ok(result);
         }
         catch (Exception ex)
         {

@@ -59,7 +59,7 @@ builder.Services.AddScoped<IExternalProductService, ExternalProductService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IProviderMetricsService, ProviderMetricsService>();
-
+builder.Services.AddScoped<IProductIngredientService, ProductIngredientService>();
 
 
 

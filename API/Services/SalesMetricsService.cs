@@ -91,20 +91,20 @@ public class SalesMetricsService : ISalesMetricsService
 
     var productSeries = new ChartSeriesDto
     {
-        Name = "ProductSales",
+        Name = "ventas de productos",
         Series = productPoints
     };
 
     var ingredientSeries = new ChartSeriesDto
     {
-        Name = "IngredientSales",
+        Name = "ventas de ingredientes",
         Series = ingredientPoints
     };
 
     var finalDto = new SalesMetricsDto
     {
         Series = new List<ChartSeriesDto> { productSeries, ingredientSeries },
-        Name = "CombinedSales",
+        Name = "ventas totales",
         Value = combinedTotal
     };
 

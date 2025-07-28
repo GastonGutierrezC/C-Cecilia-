@@ -21,13 +21,13 @@ namespace API.Controllers;
             _providerMetricsService = providerMetricsService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<ProviderSeriesDto>>> GetProviderMonthlySummary(int month, string providerName)
+        [HttpPost]
+        public async Task<ActionResult<List<ProviderSeriesDto>>> GetProviderMonthlySummary([FromBody] ProviderMetricsRequestDto request)
         {
-            if (month < 1 || month > 12)
+            if (request.Month < 1 || request.Month > 12)
                 return BadRequest("Invalid month. Must be between 1 and 12.");
 
-            var summaries = await _providerMetricsService.GetMonthlyProviderSummariesAsync(month, providerName);
+            var summaries = await _providerMetricsService.GetMonthlyProviderSummariesAsync(request.Month,request.ProviderName);
             return Ok(summaries);
         }
     }

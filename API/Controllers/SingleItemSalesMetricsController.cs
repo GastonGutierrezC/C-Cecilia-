@@ -26,7 +26,7 @@ public class SingleItemSalesMetricsController : ControllerBase
     public async Task<ActionResult<ProductSalesSeriesDto>> GetSingleItemSalesMetrics([FromBody] ItemSalesMetrictsRequestDto request)
     {
 
-        var metrics = await _salesMetricsService.GetSalesByDateAndItemNameAsync(request.StartDate,request.EndDate,request.ItemId);
+        var metrics = await _salesMetricsService.GetSalesByDateAndItemNameAsync(request.StartDate,request.EndDate,request.ItemId,request.IsProduct);
         return Ok(metrics);
         
     }

@@ -30,7 +30,8 @@ namespace API.Services
             _outputIngredientRepository = outputIngredientRepository;
         }
 
-        public async Task<List<ProductSalesSeriesDto>> GetSalesByDateAndItemNameAsync(DateOnly startDate, DateOnly endDate, int itemId)
+        public async Task<ProductSalesSeriesDto> GetSalesByDateAndItemNameAsync(
+            DateOnly startDate, DateOnly endDate, int itemId, bool isProduct)
         {
             var outputs = await _outputRepository.ListAllAsync();
             var filteredOutputs = outputs
@@ -39,68 +40,84 @@ namespace API.Services
                 .ToList();
 
             if (!filteredOutputs.Any())
-                return new List<ProductSalesSeriesDto>();
-
-            var outputIds = filteredOutputs.Select(o => o.Id).ToList();
-
-            var product = await _productRepository.GetByIdAsync(itemId);
-            var ingredient = await _ingredientRepository.GetByIdAsync(itemId);
+                return null;
 
             var groupedByDate = filteredOutputs
                 .GroupBy(o => DateOnly.FromDateTime(o.OutputDate))
                 .OrderBy(g => g.Key);
 
-            string itemName = product != null ? product.Name : ingredient?.Name ?? "";
-
             var dailyDataPoints = new List<DailySalesDataPointDto>();
             double totalSalesAccumulated = 0;
+            string itemName = "";
 
-            foreach (var group in groupedByDate)
+            if (isProduct)
             {
-                var groupOutputIds = group.Select(o => o.Id).ToList();
-                int totalQuantity = 0;
-                double totalSales = 0;
+                var product = await _productRepository.GetByIdAsync(itemId);
+                if (product == null)
+                    return null;
 
-                if (product != null)
+                itemName = product.Name;
+
+                foreach (var group in groupedByDate)
                 {
+                    var groupOutputIds = group.Select(o => o.Id).ToList();
+
                     var outputProducts = (await _outputProductRepository.ListAllAsync())
                         .Where(op => groupOutputIds.Contains(op.OutputId) && op.ProductId == product.Id)
                         .ToList();
 
-                    totalQuantity = (int)outputProducts.Sum(op => op.Quantity);
-                    totalSales = outputProducts.Sum(op => op.Quantity * product.SellPrice);
+                    int totalQuantity = (int)outputProducts.Sum(op => op.Quantity);
+                    double totalSales = outputProducts.Sum(op => op.Quantity * product.SellPrice);
+
+                    if (totalQuantity == 0)
+                        continue;
+
+                    totalSalesAccumulated += totalSales;
+
+                    dailyDataPoints.Add(new DailySalesDataPointDto
+                    {
+                        Name = group.Key.ToString("yyyy-MM-dd"),
+                        Value = totalQuantity
+                    });
                 }
-                else if (ingredient != null)
+            }
+            else
+            {
+                var ingredient = await _ingredientRepository.GetByIdAsync(itemId);
+                if (ingredient == null)
+                    return null;
+
+                itemName = ingredient.Name;
+
+                foreach (var group in groupedByDate)
                 {
+                    var groupOutputIds = group.Select(o => o.Id).ToList();
+
                     var outputIngredients = (await _outputIngredientRepository.ListAllAsync())
                         .Where(oi => groupOutputIds.Contains(oi.OutputId) && oi.IngredientId == ingredient.Id)
                         .ToList();
 
-                    totalQuantity = (int)outputIngredients.Sum(oi => oi.Quantity);
-                    totalSales = outputIngredients.Sum(oi => oi.Quantity * ingredient.SellPrice);
-                }
-                else
-                {
-                    continue;
-                }
+                    int totalQuantity = (int)outputIngredients.Sum(oi => oi.Quantity);
+                    double totalSales = outputIngredients.Sum(oi => oi.Quantity * ingredient.SellPrice);
 
-                totalSalesAccumulated += totalSales;
+                    if (totalQuantity == 0)
+                        continue;
 
-                dailyDataPoints.Add(new DailySalesDataPointDto
-                {
-                    Name = group.Key.ToString("yyyy-MM-dd"),
-                    Value = totalQuantity
-                });
+                    totalSalesAccumulated += totalSales;
+
+                    dailyDataPoints.Add(new DailySalesDataPointDto
+                    {
+                        Name = group.Key.ToString("yyyy-MM-dd"),
+                        Value = totalQuantity
+                    });
+                }
             }
 
-            return new List<ProductSalesSeriesDto>
+            return new ProductSalesSeriesDto
             {
-                new ProductSalesSeriesDto
-                {
-                    Name = itemName,
-                    Series = dailyDataPoints,
-                    Value = totalSalesAccumulated
-                }
+                Name = itemName,
+                Series = dailyDataPoints,
+                Value = totalSalesAccumulated
             };
         }
     }

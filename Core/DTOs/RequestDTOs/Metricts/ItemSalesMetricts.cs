@@ -5,5 +5,6 @@ namespace Core.DTOs.RequestDTOs
         public int ItemId { get; set; }
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
+        public bool IsProduct { get; set; }
     }
 }

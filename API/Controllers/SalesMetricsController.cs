@@ -21,10 +21,10 @@ public class SalesMetricsController : ControllerBase
         _salesMetricsService = salesMetricsService;
     }
 
-[HttpGet]
-public async Task<ActionResult<List<SalesMetricsDto>>> GetSalesMetricsByDate([FromQuery] DateOnly startDate,[FromQuery] DateOnly endDate)
-{
-    var metrics = await _salesMetricsService.GetSalesByDateRangeAsync(startDate, endDate);
-    return Ok(metrics);
-}
+   [HttpPost]
+    public async Task<ActionResult<List<SalesMetricsDto>>> GetSalesMetricsByDate([FromBody] SalesMetricsRequestDto request)
+    {
+        var metrics = await _salesMetricsService.GetSalesByDateRangeAsync(request.StartDate, request.EndDate);
+        return Ok(metrics);
+    }
 }

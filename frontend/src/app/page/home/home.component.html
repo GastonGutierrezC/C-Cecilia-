@@ -1,6 +1,10 @@
 
 <div class="home-text">
-  <h2>Bienvenido a su panel administrativo Carlos Zambrano</h2>
+  @if (userName()) {
+  <h2>Bienvenido a su panel administrativo {{ userName() }}</h2>
+  } @else {
+    <h2>Inicie Sesion</h2>
+  }
   <p>En este panel tendras acceso a las multiples funcionalidades para la gestion de inventario para la bodeha.</p>
 </div>
 <h2 class="home-text">Compra y Venta</h2>

@@ -3,7 +3,6 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {MatButton} from "@angular/material/button";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef, MatDialogTitle} from "@angular/material/dialog";
 import {MatError, MatFormField, MatHint, MatInput, MatLabel, MatSuffix} from "@angular/material/input";
-import {ProductModel} from '../../models/products';
 import {ProductService} from '../../service/product-service';
 import {MatIcon} from '@angular/material/icon';
 import {IngredientService} from '../../service/ingredient-service';

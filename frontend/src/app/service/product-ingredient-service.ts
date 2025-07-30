@@ -1,14 +1,13 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment.development';
-import {ProductData, ProductModel} from '../models/products';
 import {
   HomeMadeProductContentModel,
   HomeMadeProductData,
   HomeMadeProductModel,
-  ProductIngredientData,
-  ProductIngredientModel
 } from '../models/product-ingredient';
+import {OutputData} from '../models/output';
+import {ItemModel} from '../models/metrics';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +30,8 @@ export class ProductIngredientService {
 
   deleteProduct(id: number) {
     return this.http.delete<boolean>(this.api + '/productingredient/homemade/' + id);
+  }
+  getAllItems() {
+    return this.http.get<ItemModel[]>(this.api + '/productingredient/all-items');
   }
 }

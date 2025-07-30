@@ -6,6 +6,6 @@ namespace Core.Interfaces.Services
 {
     public interface IProviderMetricsService
     {
-        Task<List<ProviderSeriesDto>> GetMonthlyProviderSummariesAsync(int month, string providerName);
+        Task<List<ProviderSeriesDto>> GetMonthlyProviderSummariesAsync(int year, int month, int providerId);
     }
 }

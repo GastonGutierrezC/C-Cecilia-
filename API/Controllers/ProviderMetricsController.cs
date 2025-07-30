@@ -27,7 +27,7 @@ namespace API.Controllers;
             if (request.Month < 1 || request.Month > 12)
                 return BadRequest("Invalid month. Must be between 1 and 12.");
 
-            var summaries = await _providerMetricsService.GetMonthlyProviderSummariesAsync(request.Month,request.ProviderName);
+            var summaries = await _providerMetricsService.GetMonthlyProviderSummariesAsync(request.Year,request.Month, request.ProviderId);
             return Ok(summaries);
         }
     }

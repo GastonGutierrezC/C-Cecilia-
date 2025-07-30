@@ -76,32 +76,33 @@ public async Task<List<ProviderSeriesDto>> GetMonthlyProviderSummariesAsync(int 
     var dailySalesGroups = filteredOutputs
         .GroupBy(o => o.OutputDate.Date)
         .ToList();
+        
 
     foreach (var group in dailySalesGroups)
-    {
-        var opsOnDate = filteredOutputProducts
-            .Where(op => filteredOutputs.Any(o => o.Id == op.OutputId && o.OutputDate.Date == group.Key))
-            .ToList();
-
-        double dailyTotal = 0;
-        foreach (var op in opsOnDate)
-        {
-            var product = providerProducts.FirstOrDefault(p => p.Id == op.ProductId);
-            if (product != null)
             {
-                dailyTotal += op.Quantity * product.SellPrice;
+                var opsOnDate = filteredOutputProducts
+                    .Where(op => filteredOutputs.Any(o => o.Id == op.OutputId && o.OutputDate.Date == group.Key))
+                    .ToList();
+
+                double dailyTotal = 0;
+                foreach (var op in opsOnDate)
+                {
+                    var product = providerProducts.FirstOrDefault(p => p.Id == op.ProductId);
+                    if (product != null)
+                    {
+                        dailyTotal += op.Quantity * product.SellPrice;
+                    }
+                }
+
+                if (dailyTotal > 0)
+                {
+                    dailySalesList.Add(new DailySalesEntry
+                    {
+                        Name = group.Key.ToString("yyyy-MM-dd"),
+                        Value = dailyTotal
+                    });
+                }
             }
-        }
-
-        if (dailyTotal > 0)
-        {
-            dailySalesList.Add(new DailySalesEntry
-            {
-                Name = group.Key.ToString("yyyy-MM-dd"),
-                Value = dailyTotal
-            });
-        }
-    }
 
     double accumulated = dailySalesList.Sum(d => d.Value);
     double percentageAchieved = provider.ObjetiveMount > 0
@@ -123,6 +124,9 @@ public async Task<List<ProviderSeriesDto>> GetMonthlyProviderSummariesAsync(int 
 
     var summary = new ProviderSeriesDto
     {
+        Name = "cantidad de productos",
+        Value = providerProducts.Count,
+
         ProviderName = new ProviderNameDto { Name = provider.Name },
         TargetAmount = new TargetAmountDto { Name = "Monto objetivo", Value = provider.ObjetiveMount },
         AccumulatedToDate = new AccumulatedToDateDto { Name = "Acumulado hasta la fecha", Value = accumulated },

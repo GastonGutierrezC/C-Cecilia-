@@ -48,6 +48,9 @@ public class DailySalesEntry
 
 public class ProviderSeriesDto
 {
+    public string Name { get; set; }
+    public double Value { get; set; }
+
     public ProviderNameDto ProviderName { get; set; } = new();
     public TargetAmountDto TargetAmount { get; set; } = new();
     public AccumulatedToDateDto AccumulatedToDate { get; set; }

@@ -1,0 +1,56 @@
+<div class="eco-metrics-div">
+  <div>
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker" [formControl]="dateForm.controls.date">
+      <mat-hint>MM/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker
+      ></mat-datepicker>
+      @if (dateForm.controls.date.hasError('matDateInvalid')) {
+        <mat-error>fecha final invalida</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre del proveedor</mat-label>
+      <input type="text"
+             placeholder=""
+             matInput
+             [formControl]="providerForm.controls.provider"
+             [value]="providerForm.value.provider?.name ?? ''"
+             [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        @for (option of providers; track option) {
+          <mat-option [value]="option">{{option.name}}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+    <button mat-stroked-button (click)="applyFilter()">Aplicar filtros</button>
+  </div>
+  <div class="chart">
+    <ngx-charts-bar-vertical-2d
+      xAxisLabel="Fecha"
+      yAxisLabel="Ganancias"
+      [legendPosition]="LegendPosition.Below"
+      [showGridLines]="true"
+      [legend]="true"
+      [legendTitle]="'XD'"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      [results]="metrics"
+    >
+    </ngx-charts-bar-vertical-2d>
+
+  </div>
+  <div style="padding-top: 3rem">
+    <h5>{{metrics[0].targetAmount.name + ': ' + metrics[0].targetAmount.value}}Bs</h5>
+    <h5>{{metrics[0].accumulatedToDate.name + ': ' + metrics[0].accumulatedToDate.value}}Bs</h5>
+    <h5>{{metrics[0].percentageAchieved.name + ': ' + metrics[0].percentageAchieved.value}}%</h5>
+    <h5>{{metrics[0].closingTrend.name + ': ' + metrics[0].closingTrend.value}}Bs</h5>
+    <h5>{{metrics[0].trendPercentage.name + ': ' + metrics[0].trendPercentage.value}}%</h5>
+    <h5>{{metrics[0].requiredDailySales.name + ': ' + metrics[0].requiredDailySales.value}}Bs</h5>
+  </div>
+
+</div>

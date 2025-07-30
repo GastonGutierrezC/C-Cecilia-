@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment.development';
 import {OutputData} from '../models/output';
-import {EcoMetricsData, ItemMetricsData} from '../models/metrics';
+import {EcoMetricsData, ItemMetricsData, ProviderMetricsData} from '../models/metrics';
 
 @Injectable({
   providedIn: 'root'
@@ -20,4 +20,7 @@ export class MetricsService {
     return this.http.post<any>(this.api + '/api/SingleItemSalesMetrics', data);
   }
 
+  getProviderMetrics(data: ProviderMetricsData){
+    return this.http.post<any>(this.api + '/api/ProviderMetrics', data);
+  }
 }

@@ -1,0 +1,10 @@
+.eco-metrics-div {
+  padding: 2rem 1rem;
+  display: grid;
+  grid-template-rows: 6rem 2fr 1fr;
+  grid-gap: 1rem;
+  .chart {
+    margin-top:  2rem;
+    min-height: 25rem;
+  }
+}

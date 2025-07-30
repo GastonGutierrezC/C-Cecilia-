@@ -15,3 +15,9 @@ export interface ItemModel {
   name: string;
   isProduct: boolean;
 }
+
+export interface ProviderMetricsData {
+  month: number;
+  year: number;
+  providerId: number;
+}

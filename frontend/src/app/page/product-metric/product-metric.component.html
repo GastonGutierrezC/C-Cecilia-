@@ -18,7 +18,7 @@
       }
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Nombre del ingrediente</mat-label>
+      <mat-label> Ingrediente/Producto</mat-label>
       <input type="text"
              placeholder=""
              matInput
@@ -36,11 +36,11 @@
   <div class="chart">
     <ngx-charts-bar-vertical-2d
       xAxisLabel="Fecha"
-      yAxisLabel="Ganancias"
+      yAxisLabel="Cantidad Vendida"
       [legendPosition]="LegendPosition.Below"
       [showGridLines]="true"
       [legend]="true"
-      [legendTitle]="'XD'"
+      [legendTitle]="'Metricas de stock[Unidad]'"
       [xAxis]="true"
       [yAxis]="true"
       [showXAxisLabel]="true"

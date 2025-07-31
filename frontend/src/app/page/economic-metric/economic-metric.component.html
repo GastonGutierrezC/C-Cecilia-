@@ -22,12 +22,12 @@
 <div class="chart">
   <ngx-charts-line-chart
     xAxisLabel="Fecha"
-    yAxisLabel="Ganancias"
+    yAxisLabel="Ganancias[Bs]"
     [legendPosition]="LegendPosition.Below"
     [showGridLines]="true"
     [legend]="true"
     [showRefLabels]="true"
-    [legendTitle]="metrics.name + ': ' + metrics.value"
+    [legendTitle]="metrics.name + ': ' + metrics.value + '[Bs]'"
     [xAxis]="true"
     [yAxis]="true"
     [timeline]="true"

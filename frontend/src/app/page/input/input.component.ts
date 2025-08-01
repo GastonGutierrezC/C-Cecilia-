@@ -8,6 +8,7 @@ import {
   MatHeaderCell, MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
+  MatNoDataRow,
   MatRow, MatRowDef, MatTable, MatTableDataSource
 } from "@angular/material/table";
 import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
@@ -25,6 +26,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {ConfirmationDialogComponent} from '../../dialog/confirmation-dialog/confirmation-dialog.component';
 import {CompleteTaskComponent} from '../../dialog/complete-task/complete-task.component';
 import {InputService} from '../../service/input-service';
+import { SuccessDialogComponent } from '../../dialog/success-dialog/success-dialog.component';
+
 
 @Component({
   selector: 'app-input',
@@ -50,7 +53,8 @@ import {InputService} from '../../service/input-service';
     MatTabGroup,
     MatTable,
     ReactiveFormsModule,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    MatNoDataRow
   ],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss'
@@ -101,7 +105,10 @@ export class InputComponent implements OnInit, AfterViewInit{
           quantity: this.productOutput.value.quantity,
           partialPrice: this.productOutput.value.quantity * this.productOutput.value.product.sellPrice
         }))
-      this.productsDataSource = new MatTableDataSource(this.inputData())
+        this.productOutput.reset();
+        this.productOutput.controls.product.setValue(null);
+        this.productOutput.controls.quantity.setValue(0);
+        this.productsDataSource = new MatTableDataSource(this.inputData())
     }
   }
 
@@ -118,7 +125,10 @@ export class InputComponent implements OnInit, AfterViewInit{
           quantity: this.ingredientOutput.value.quantity,
           partialPrice: this.ingredientOutput.value.quantity * this.ingredientOutput.value.ingredient.sellPrice
         }))
-      this.productsDataSource = new MatTableDataSource(this.inputData())
+        this.ingredientOutput.reset();
+        this.ingredientOutput.controls.ingredient.setValue(null);
+        this.ingredientOutput.controls.quantity.setValue(0);
+        this.productsDataSource = new MatTableDataSource(this.inputData())
     }
   }
 
@@ -141,10 +151,20 @@ export class InputComponent implements OnInit, AfterViewInit{
     })
     this.inputService.createInputProductAndIngredients(data).subscribe({
       next: (res) => {
-        if (res) this.dialog.open(CompleteTaskComponent, {
-          data: "Compra registrada con exito"
-        })
+        if (res) {
+          this.inputData.set([]);
+          this.productsDataSource = new MatTableDataSource(this.inputData());
+          this.productOutput.reset();
+          this.ingredientOutput.reset();
+          
+          this.dialog.open(CompleteTaskComponent, {
+            data: "Compra registrada con éxito"
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error al registrar compra:', err);
       }
-    })
+    });
   }
 }

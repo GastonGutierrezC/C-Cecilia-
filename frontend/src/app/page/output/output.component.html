@@ -1,93 +1,156 @@
-<div class="output-page">
-  <h1 class="page-title">Venta de Productos</h1>
-  <p class="page-title">Aqui podra realizar las ventas de la tienda, agregandolos a una lista y viendo la cantidad y el total de la venta(YA SEA PRODUCTOS O INGREDIENTES).</p>
-  <mat-tab-group >
+<div class="sales-page">
+
+  <div class="page-header">
+    <h1 class="page-title">
+      <mat-icon>point_of_sale</mat-icon>
+      Venta de Productos
+    </h1>
+    <p class="page-subtitle">
+      Registre las ventas de productos o ingredientes, calculando automáticamente el total
+    </p>
+  </div>
+
+  <mat-tab-group class="sales-tabs" animationDuration="200ms">
     <mat-tab label="Ingredientes">
-      <div class="output-tab">
-        <mat-form-field appearance="outline">
-          <mat-label>Nombre del ingrediente</mat-label>
-          <input type="text"
-                 placeholder=""
-                 matInput
-                 [formControl]="ingredientOutput.controls.ingredient"
-                 [value]="ingredientOutput.value.ingredient?.name ?? ''"
-                 [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete">
-            @for (option of ingredients; track option) {
-              <mat-option [value]="option">{{option.name}}</mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Cantidad({{ingredientOutput.value.ingredient?.ingredientUnit ?? '__'}})</mat-label>
-          <input matInput [formControl]="ingredientOutput.controls.quantity" type="number">
-        </mat-form-field>
-        <button mat-flat-button (click)="addIngredient()">
-          Añadir a la lista
-        </button>
+      <div class="tab-content">
+        <div class="form-card">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Buscar Ingrediente</mat-label>
+            <input type="text" matInput
+                   [formControl]="ingredientOutput.controls.ingredient"
+                   [value]="ingredientOutput.value.ingredient?.name ?? ''"
+                   [matAutocomplete]="auto">
+            <mat-icon matSuffix>search</mat-icon>
+            <mat-autocomplete #auto="matAutocomplete">
+              @for (option of ingredients; track option) {
+                <mat-option [value]="option">
+                  <span>{{option.name}}</span>
+                  <span class="option-detail">{{option.quantity}} {{option.ingredientUnit}}</span>
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cantidad</mat-label>
+            <input matInput [formControl]="ingredientOutput.controls.quantity" type="number">
+            <span matTextSuffix>{{ingredientOutput.value.ingredient?.ingredientUnit ?? 'unidad'}}</span>
+          </mat-form-field>
+
+          <button mat-flat-button class="add-button" (click)="addIngredient()">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Añadir a Venta
+          </button>
+        </div>
       </div>
     </mat-tab>
-    <mat-tab label="productos">
-      <div class="output-tab">
-        <mat-form-field appearance="outline">
-          <mat-label>Nombre del producto</mat-label>
-          <input type="text"
-                 placeholder=""
-                 matInput
-                 [formControl]="productOutput.controls.product"
-                 [value]="productOutput.value.product?.name ?? ''"
-                 [matAutocomplete]="auto2">
-          <mat-autocomplete #auto2="matAutocomplete">
-            @for (option of products; track option) {
-              <mat-option [value]="option">{{option.name}}</mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Cantidad</mat-label>
-          <input matInput [formControl]="productOutput.controls.quantity" type="number">
-        </mat-form-field>
-        <button mat-flat-button (click)="addProduct()">
-          Añadir a la lista
-        </button>
+
+    <mat-tab label="Productos">
+      <div class="tab-content">
+        <div class="form-card">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Buscar Producto</mat-label>
+            <input type="text" matInput
+                   [formControl]="productOutput.controls.product"
+                   [value]="productOutput.value.product?.name ?? ''"
+                   [matAutocomplete]="auto2">
+            <mat-icon matSuffix>search</mat-icon>
+            <mat-autocomplete #auto2="matAutocomplete">
+              @for (option of products; track option) {
+                <mat-option [value]="option">
+                  <span>{{option.name}}</span>
+                  <span class="option-detail">{{option.quantity}} almacenados {{option.sellPrice}} Bs </span>
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cantidad</mat-label>
+            <input matInput [formControl]="productOutput.controls.quantity" type="number">
+          </mat-form-field>
+
+          <button mat-flat-button class="add-button" (click)="addProduct()">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Añadir a Venta
+          </button>
+        </div>
       </div>
     </mat-tab>
   </mat-tab-group>
-  <div class="table-container-2">
+
+  <div class="sales-summary">
+    <div class="summary-header">
+      <h2>
+        <mat-icon>receipt_long</mat-icon>
+        Resumen de Venta
+      </h2>
+      <div class="total-price">
+        <span>Total a Cobrar:</span>
+        <span class="price">{{totalPrice()}} Bs</span>
+      </div>
+    </div>
+
     <div class="table-container">
-      <table class="table-products" mat-table [dataSource]="productsDataSource" >
-        <ng-container matColumnDef="name" sticky>
-          <th mat-header-cell *matHeaderCellDef> Nombre </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      <table mat-table [dataSource]="productsDataSource" class="sales-table">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Producto </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="product-info">
+              <mat-icon>{{element.isProduct ? 'shopping_basket' : 'kitchen'}}</mat-icon>
+              {{element.name}}
+            </div>
+          </td>
         </ng-container>
-        <ng-container matColumnDef="isProduct">
-          <th mat-header-cell *matHeaderCellDef> Es producto </th>
-          <td mat-cell *matCellDef="let element"> {{element.isProduct ? 'SI' : 'NO'}} </td>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef> Tipo </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="type-badge">{{element.isProduct ? 'Producto' : 'Ingrediente'}}</span>
+          </td>
         </ng-container>
-        <ng-container matColumnDef="partialPrice">
-          <th mat-header-cell *matHeaderCellDef> Precio Parcial </th>
-          <td mat-cell *matCellDef="let element"> {{element.partialPrice}}(Bs) </td>
-        </ng-container>
+
         <ng-container matColumnDef="quantity">
           <th mat-header-cell *matHeaderCellDef> Cantidad </th>
-          <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+          <td mat-cell *matCellDef="let element"> 
+            <span class="quantity-badge">{{element.quantity}}</span>
+          </td>
         </ng-container>
 
-        <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef> Eliminar </th>
-          <td (click)="removeSale(element)" mat-cell *matCellDef="let element"><mat-icon>delete</mat-icon></td>
+        <ng-container matColumnDef="partialPrice">
+          <th mat-header-cell *matHeaderCellDef> Subtotal </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="price">{{element.partialPrice}} Bs</span>
+          </td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">Añade productos o ingreddientes para verlos aqui</td>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button class="delete-button" (click)="removeSale(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['name', 'type', 'quantity', 'partialPrice', 'actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name', 'type', 'quantity', 'partialPrice', 'actions'];"></tr>
+
+        <tr class="empty-row" *matNoDataRow>
+          <td colspan="5">
+            <div class="empty-state">
+              <mat-icon>info</mat-icon>
+              <p>Añade productos o ingredientes para verlos aquí</p>
+            </div>
+          </td>
         </tr>
       </table>
+      <mat-paginator class="table-products" style="background: #b98860" [pageSizeOptions]="[5, 10, 25, 100]"
+                   aria-label="Selecciona página"></mat-paginator>    </div>
 
-    </div>
-    <mat-paginator class="table-products" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Selecciona pagina"></mat-paginator>
-    <h2>Total: {{totalPrice()}}</h2>
-    <button mat-flat-button (click)="sale()">Vender Lista</button>
+    <button mat-flat-button class="checkout-button" (click)="sale()">
+      <mat-icon>payments</mat-icon>
+      Confirmar Venta
+    </button>
   </div>
-
 </div>

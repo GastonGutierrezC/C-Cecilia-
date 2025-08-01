@@ -25,4 +25,8 @@ export class ProductService {
   deleteProduct(id: number) {
     return this.http.delete<boolean>(this.api + '/product/' + id);
   }
+  getThirdProducts() {
+    return this.http.get<ProductModel[]>(this.api + '/productingredient/external');
+  }
+  
 }

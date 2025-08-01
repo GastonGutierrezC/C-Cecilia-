@@ -17,7 +17,6 @@ import {
 } from '@angular/material/card';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmationDialogComponent} from '../../dialog/confirmation-dialog/confirmation-dialog.component';
-import {ResizeImageDialogComponent} from '../../dialog/resize-image-dialog/resize-image-dialog.component';
 import {
   MatCell, MatCellDef,
   MatColumnDef,
@@ -29,13 +28,13 @@ import {
 } from '@angular/material/table';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-third-product.component';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {ProviderComponent} from '../../sheet/provider/provider.component';
 import {ProviderService} from '../../service/provider-service';
 import {ProviderModel} from '../../models/provider';
 import { SuccessDialogComponent } from '../../dialog/success-dialog/success-dialog.component';
+import { ProductIngredientService } from '../../service/product-ingredient-service';
 
 
 @Component({
@@ -122,7 +121,7 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
     return;
   }
   ngOnInit() {
-    this.productService.getProducts().subscribe(products => {
+    this.productService.getThirdProducts().subscribe(products => {
       this.dataSource = new MatTableDataSource(products);
       this.products = products;
       this.filteredProducts = products;
@@ -145,7 +144,7 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
     }
   }
   ngAfterViewInit() {
-    this.productService.getProducts().subscribe(products => {
+    this.productService.getThirdProducts().subscribe(products => {
       this.dataSource = new MatTableDataSource<ProductModel>(products);
       this.products = products;
       this.filteredProducts = products;
@@ -214,7 +213,7 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
     this.providerService.getProviders().subscribe({
       next: (providers) => {
         this.providers = [...providers];
-        this.productService.getProducts().subscribe(products => {
+        this.productService.getThirdProducts().subscribe(products => {
           this.products = products;
           this.filteredProducts = products;
           this.dataSource = new MatTableDataSource(products);

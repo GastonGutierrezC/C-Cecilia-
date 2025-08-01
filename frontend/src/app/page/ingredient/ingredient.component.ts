@@ -23,6 +23,7 @@ import {EditThirdProductComponent} from '../../dialog/edit-third-product/edit-th
 import {IngredientModel} from '../../models/ingredient';
 import {IngredientService} from '../../service/ingredient-service';
 import {EditIngredientComponent} from '../../dialog/edit-ingredient/edit-ingredient.component';
+import { SuccessDialogComponent } from '../../dialog/success-dialog/success-dialog.component';
 
 @Component({
   selector: 'app-ingredient',
@@ -122,37 +123,54 @@ export class IngredientComponent implements OnInit, AfterViewInit{
       && this.ingredientForm.value.sellPrice !== undefined
       && this.ingredientForm.value.name !== undefined
       && this.ingredientForm.value.ingredientUnit !== undefined) {
+
       this.ingredientService.createIngredient({
         name: this.ingredientForm.value.name,
         ingredientUnit: this.ingredientForm.value.ingredientUnit,
         unitPrice: this.ingredientForm.value.unitPrice,
         sellPrice: this.ingredientForm.value.sellPrice,
         quantity: 0
-      }).subscribe(res => {
-        this.ingredientService.getIngredients().subscribe(ingredients => {
-          this.ingredients = ingredients;
-          this.filteredIngredient = ingredients;
-          this.dataSource = new MatTableDataSource(ingredients);
-          this.dataSource.paginator = this.paginator()
-          this.dataSource.sort = this.sort()
-        })
-      })
+      }).subscribe({
+        next: (res) => {
+          this.dialog.open(SuccessDialogComponent, {
+            data: {
+              title: '¡Ingrediente creado!',
+              message: 'El ingrediente se ha creado correctamente',
+              icon: 'check_circle',
+              buttonText: 'Aceptar'
+            }
+          });
+          this.ingredientForm.reset();
+          Object.keys(this.ingredientForm.controls).forEach(key => {
+            this.ingredientForm.get(key)?.setErrors(null);
+          });
+          this.updateIngredientsList();
+        },
+        error: (err) => {
+          console.error('Error al crear ingrediente:', err);
+        }
+      });
     }
+  }
+
+  private updateIngredientsList() {
+    this.ingredientService.getIngredients().subscribe(ingredients => {
+      this.ingredients = ingredients;
+      this.filteredIngredient = ingredients;
+      this.dataSource = new MatTableDataSource(ingredients);
+      this.dataSource.paginator = this.paginator();
+      this.dataSource.sort = this.sort();
+    });
   }
 
   deleteIngredient(id: number) {
     this.dialog.open(ConfirmationDialogComponent, {
     }).afterClosed().subscribe((result: boolean) => {
       if (result) {
-        this.ingredientService.deleteIngredient(id).subscribe(res => {
-          this.ingredientService.getIngredients().subscribe(ingredients => {
-            this.dataSource = new MatTableDataSource(ingredients);
-            this.ingredients = ingredients;
-            this.filteredIngredient = ingredients;
-            this.dataSource.paginator = this.paginator()
-            this.dataSource.sort = this.sort()
-          })
-        })
+        this.ingredientService.deleteIngredient(id).subscribe({
+          next: () => this.updateIngredientsList(),
+          error: (err) => console.error('Error al eliminar:', err)
+        });
       }
     })
   }
@@ -163,11 +181,7 @@ export class IngredientComponent implements OnInit, AfterViewInit{
     }).afterClosed().subscribe({
       next: (res: boolean) => {
         if (res) {
-          this.ingredientService.getIngredients().subscribe(ingredients => {
-            this.ingredients = ingredients;
-            this.filteredIngredient = ingredients;
-            this.dataSource = new MatTableDataSource(ingredients);
-          })
+          this.updateIngredientsList();
         }
       }
     })

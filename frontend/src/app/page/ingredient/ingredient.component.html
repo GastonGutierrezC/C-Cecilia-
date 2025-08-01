@@ -1,135 +1,209 @@
-
 <div class="third-products-page">
 
-  <div class="button-actions">
-    <button mat-stroked-button (click)="onCreationMode = !onCreationMode">{{onCreationMode ? 'cerrar formulario de creación' : 'abrir formulario de creación'}}</button>
+  <div class="page-header">
+    <h1>Gestión de Ingredientes</h1>
+    <div class="button-actions">
+      <button mat-flat-button class="primary-button" (click)="onCreationMode = !onCreationMode">
+        <mat-icon>{{onCreationMode ? 'close' : 'add'}}</mat-icon>
+        {{onCreationMode ? 'Cerrar Formulario' : 'Nuevo Producto'}}
+      </button>
+
+      <div class="button-actions">
+      <button mat-stroked-button class="secondary-button" (click)="tableView = !tableView">
+        <mat-icon>{{tableView ? 'view_module' : 'table_chart'}}</mat-icon>
+        {{tableView ? 'Vista Mosaico' : 'Vista Tabla'}}
+      </button>
+    </div>
+    </div>
   </div>
 
   @if (onCreationMode) {
     <div class="product-creation">
-      <mat-form-field appearance="outline">
-        <mat-label>Nombre</mat-label>
-        <input matInput [formControl]="ingredientForm.controls.name">
-        @if (ingredientForm.controls.name.hasError('required')) {
-          <mat-error>El nombre es <strong>requerido</strong></mat-error>
-        }
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Unidad</mat-label>
-        <input matInput [formControl]="ingredientForm.controls.ingredientUnit" >
-        @if (ingredientForm.controls.ingredientUnit.hasError('required')) {
-          <mat-error>La unidad es <strong>requerida</strong></mat-error>
-        }
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Precio de compra por unidad</mat-label>
-        <input type="number" min="0" matInput [formControl]="ingredientForm.controls.unitPrice">
-        <mat-hint>no se admiten negativos</mat-hint>
-        @if (ingredientForm.controls.unitPrice.hasError('required')) {
-          <mat-error>El precio de compra es <strong>requerido</strong></mat-error>
-        }
-      </mat-form-field>
+      <div class="form-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre del Ingrediente</mat-label>
+          <input matInput [formControl]="ingredientForm.controls.name">
+          <mat-icon matSuffix>inventory_2</mat-icon>
+          @if (ingredientForm.controls.name.hasError('required')) {
+            <mat-error>El nombre es <strong>requerido</strong></mat-error>
+          }
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Precio de venta por unidad</mat-label>
-        <input type="number" min="0" matInput [formControl]="ingredientForm.controls.sellPrice">
-        <mat-hint>no se admiten negativos</mat-hint>
-        @if (ingredientForm.controls.sellPrice.hasError('required')) {
-          <mat-error>El precio de venta es <strong>requerido</strong></mat-error>
-        }
-      </mat-form-field>
-      <div>
-        <button mat-flat-button (click)="createIngredient()">Crear Ingrediente</button>
+        <mat-form-field appearance="outline">
+          <mat-label>Unidad de Medida</mat-label>
+          <input matInput [formControl]="ingredientForm.controls.ingredientUnit">
+          <mat-icon matSuffix>straighten</mat-icon>
+          @if (ingredientForm.controls.ingredientUnit.hasError('required')) {
+            <mat-error>La unidad es <strong>requerida</strong></mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="form-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Precio de Compra</mat-label>
+          <input type="number" min="0" matInput [formControl]="ingredientForm.controls.unitPrice">
+          <mat-icon matSuffix>shopping_cart</mat-icon>
+          <span matTextSuffix>&nbsp;Bs</span>
+          <mat-hint>Precio por unidad de compra</mat-hint>
+          @if (ingredientForm.controls.unitPrice.hasError('required')) {
+            <mat-error>El precio de compra es <strong>requerido</strong></mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Precio de Venta</mat-label>
+          <input type="number" min="0" matInput [formControl]="ingredientForm.controls.sellPrice">
+          <mat-icon matSuffix>sell</mat-icon>
+          <span matTextSuffix>&nbsp;Bs</span>
+          <mat-hint>Precio por unidad de venta</mat-hint>
+          @if (ingredientForm.controls.sellPrice.hasError('required')) {
+            <mat-error>El precio de venta es <strong>requerido</strong></mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="create-button-container">
+        <button mat-flat-button (click)="createIngredient()">
+          <mat-icon>add_circle</mat-icon>
+          Crear Ingrediente
+        </button>
       </div>
     </div>
   }
-  <div class="button-actions">
-    <button mat-stroked-button (click)="tableView = !tableView">{{tableView ? 'cambiar a mosaico' : 'cambiar a tabla'}}</button>
-  </div>
 
   @if (tableView) {
     <div class="searcher">
       <mat-form-field appearance="outline">
-        <mat-label>Filtro por nombre</mat-label>
-        <input matInput (keyup)="applyFilter($event)"  #input>
+        <mat-label>Buscar productos...</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #input>
+        <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
     </div>
+
     <div class="table-container">
-      <table class="table-products" mat-table [dataSource]="dataSource" matSort >
+      <table class="table-products" mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="name" sticky>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Nombre </th>
-          <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <mat-icon>inventory_2</mat-icon>
+            Nombre
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.name}}</td>
         </ng-container>
+
         <ng-container matColumnDef="ingredientUnit">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Unidad </th>
-          <td mat-cell *matCellDef="let row"> {{row.ingredientUnit}}</td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Unidad
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.ingredientUnit}}</td>
         </ng-container>
+
         <ng-container matColumnDef="unitPrice">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio de compra por unidad </th>
-          <td mat-cell *matCellDef="let row"> {{row.unitPrice}} Bs </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Precio Compra
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.unitPrice}} Bs</td>
         </ng-container>
+
         <ng-container matColumnDef="sellPrice">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio de venta por unidad </th>
-          <td mat-cell *matCellDef="let row"> {{row.sellPrice}} Bs </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Precio Venta
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.sellPrice}} Bs</td>
         </ng-container>
+
         <ng-container matColumnDef="quantity">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Cantidad </th>
-          <td mat-cell *matCellDef="let row"> {{row.quantity}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Cantidad
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.quantity}}</td>
         </ng-container>
+
         <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef > Eliminar </th>
-          <td mat-cell (click)="deleteIngredient(row.id)" *matCellDef="let row"><mat-icon>delete</mat-icon></td>
+          <th mat-header-cell *matHeaderCellDef>Eliminar</th>
+          <td mat-cell (click)="deleteIngredient(row.id)" *matCellDef="let row">
+            <mat-icon class="delete-icon">delete</mat-icon>
+          </td>
         </ng-container>
+
         <ng-container matColumnDef="edit">
-          <th mat-header-cell *matHeaderCellDef > Editar </th>
-          <td mat-cell (click)="editIngredient(row)" *matCellDef="let row"><mat-icon>edit</mat-icon></td>
+          <th mat-header-cell *matHeaderCellDef>Editar</th>
+          <td mat-cell (click)="editIngredient(row)" *matCellDef="let row">
+            <mat-icon>edit</mat-icon>
+          </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
         <tr mat-row *matRowDef="let row; columns: columns;"></tr>
 
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">No hay productos con: "{{input.value}}"</td>
+        <tr class="mat-row" matNoDataRow>
+          <td class="mat-cell" colspan="7">
+            <div style="text-align: center; padding: 2rem;">
+              <mat-icon style="font-size: 3rem; color: #ccc;">search_off</mat-icon>
+              <p>No se encontraron productos con: "<strong>{{input.value}}</strong>"</p>
+            </div>
+          </td>
         </tr>
       </table>
-
     </div>
-    <mat-paginator class="table-products" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Selecciona pagina"></mat-paginator>
+
+    <mat-paginator class="table-products" style="background: #a2846b" [pageSizeOptions]="[5, 10, 25, 100]"
+                   aria-label="Selecciona página"></mat-paginator>
 
   } @else {
     <div class="searcher">
-      <mat-form-field appearance="outline" >
-        <mat-label>Buscar por nombre</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>Buscar productos...</mat-label>
         <input type="text" [formControl]="filterName" matInput (keyup)="filter()">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
     </div>
+
     <div class="products-div">
       @if (ingredients.length < 1) {
-        <h2>No hay productos de terceros creados aún</h2>
+        <div class="empty-state">
+          <mat-icon>inventory_2</mat-icon>
+          <h2>No hay productos de terceros creados aún</h2>
+          <p style="color: #666; margin-top: 1rem;">Comienza creando tu primer producto usando el botón "Nuevo Producto"</p>
+        </div>
       }
+
       @for (ingredient of filteredIngredient; track $index) {
-        <mat-card  class="products-card">
+        <mat-card class="products-card">
           <mat-card-header>
             <mat-card-title>
+              <mat-icon>inventory_2</mat-icon>
               {{ingredient.name}}
             </mat-card-title>
           </mat-card-header>
+
           <mat-card-content>
           </mat-card-content>
+
           <mat-card-footer>
-            <h4>Precio de compra: {{ingredient.unitPrice}} Bs/{{ingredient.ingredientUnit}}</h4>
-            <h4>Precio de venta: {{ingredient.sellPrice}} Bs/{{ingredient.ingredientUnit}} </h4>
-            <h4>Cantidad: {{ingredient.quantity}} </h4>
+            <h4 class="price-buy">
+              Compra: {{ingredient.unitPrice}} Bs/{{ingredient.ingredientUnit}}
+            </h4>
+            <h4 class="price-sell">
+              Venta: {{ingredient.sellPrice}} Bs/{{ingredient.ingredientUnit}}
+            </h4>
+            <h4 class="quantity">
+              Stock: {{ingredient.quantity}} {{ingredient.ingredientUnit}}
+            </h4>
+
             <div class="button-actions">
-              <button mat-icon-button (click)="deleteIngredient(ingredient.id)"><mat-icon>delete</mat-icon></button>
-              <button mat-icon-button (click)="editIngredient(ingredient)"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button (click)="deleteIngredient(ingredient.id)"
+                      matTooltip="Eliminar producto">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button (click)="editIngredient(ingredient)"
+                      matTooltip="Editar producto">
+                <mat-icon>edit</mat-icon>
+              </button>
             </div>
           </mat-card-footer>
         </mat-card>
       }
     </div>
-
   }
-
 </div>

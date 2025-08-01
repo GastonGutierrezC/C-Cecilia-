@@ -35,6 +35,8 @@ import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {ProviderComponent} from '../../sheet/provider/provider.component';
 import {ProviderService} from '../../service/provider-service';
 import {ProviderModel} from '../../models/provider';
+import { SuccessDialogComponent } from '../../dialog/success-dialog/success-dialog.component';
+
 
 @Component({
   selector: 'app-third-product',
@@ -164,15 +166,16 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
 
   createProduct() {
     if (this.productForm.valid
-    && this.productForm.value.name !== null
-    && this.productForm.value.inPrice !== null
-    && this.productForm.value.sellPrice !== null
-    && this.productForm.value.sellPrice !== undefined
-    && this.productForm.value.name !== undefined
-    && this.productForm.value.inPrice !== undefined
-    && this.productForm.value.providerId !== null
-    && this.productForm.value.providerId !== undefined
-    && this.image64) {
+      && this.productForm.value.name !== null
+      && this.productForm.value.inPrice !== null
+      && this.productForm.value.sellPrice !== null
+      && this.productForm.value.sellPrice !== undefined
+      && this.productForm.value.name !== undefined
+      && this.productForm.value.inPrice !== undefined
+      && this.productForm.value.providerId !== null
+      && this.productForm.value.providerId !== undefined
+      && this.image64) {
+
       this.productService.createProduct({
         name: this.productForm.value.name,
         inPrice: this.productForm.value.inPrice,
@@ -180,46 +183,59 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
         image: this.image64,
         quantity: 0,
         providerId: this.productForm.value.providerId,
-      }).subscribe(res => {
-        this.productService.getProducts().subscribe(products => {
-          this.products = products;
+      }).subscribe({
+        next: (res) => {
+          this.dialog.open(SuccessDialogComponent, {
+            data: {
+              title: '¡Producto creado!',
+              message: `El producto "${this.productForm.value.name}" se creó correctamente`,
+              icon: 'check_circle',
+              buttonText: 'Aceptar'
+            }
+          });
+
+          this.productForm.reset({
+            inPrice: 0,
+            sellPrice: 0
+          });
           this.fileName = undefined;
           this.image64 = undefined;
-          this.filteredProducts = products;
-          this.dataSource = new MatTableDataSource(products)
 
-          this.dataSource.paginator = this.paginator()
-          this.dataSource.sort = this.sort()
-        })
-
-        this.providerService.getProviders().subscribe({
-          next: (providers) => {
-            this.providers = providers;
-          }
-        })
-      })
+          this.updateProductsList();
+        },
+        error: (err) => {
+          console.error('Error al crear producto:', err);
+        }
+      });
     }
+  }
+
+  private updateProductsList() {
+    this.providerService.getProviders().subscribe({
+      next: (providers) => {
+        this.providers = [...providers];
+        this.productService.getProducts().subscribe(products => {
+          this.products = products;
+          this.filteredProducts = products;
+          this.dataSource = new MatTableDataSource(products);
+          this.dataSource.paginator = this.paginator();
+          this.dataSource.sort = this.sort();
+        });
+      },
+      error: (err) => {
+        console.error('Error al actualizar proveedores:', err);
+      }
+    });
   }
 
   deleteProduct(id: number) {
     this.dialog.open(ConfirmationDialogComponent, {
     }).afterClosed().subscribe((result: boolean) => {
       if (result) {
-        this.productService.deleteProduct(id).subscribe(res => {
-          this.productService.getProducts().subscribe(products => {
-            this.dataSource = new MatTableDataSource(products);
-            this.products = products;
-            this.filteredProducts = products;
-            this.dataSource.paginator = this.paginator()
-            this.dataSource.sort = this.sort()
-          })
-
-          this.providerService.getProviders().subscribe({
-            next: (providers) => {
-              this.providers = providers;
-            }
-          })
-        })
+        this.productService.deleteProduct(id).subscribe({
+          next: () => this.updateProductsList(),
+          error: (err) => console.error('Error al eliminar producto:', err)
+        });
       }
     })
   }
@@ -230,25 +246,16 @@ export class ThirdProductComponent implements OnInit, AfterViewInit{
     }).afterClosed().subscribe({
       next: (res: boolean) => {
         if (res) {
-          this.productService.getProducts().subscribe(products => {
-            this.products = products;
-            this.filteredProducts = products;
-            this.dataSource = new MatTableDataSource(products);
-            this.dataSource.paginator = this.paginator()
-            this.dataSource.sort = this.sort()
-          })
-
-          this.providerService.getProviders().subscribe({
-            next: (providers) => {
-              this.providers = providers;
-            }
-          })
+          this.updateProductsList();
         }
       }
     })
   }
   openBottomSheet(): void {
-    this.bottomSheet.open<ProviderComponent>(ProviderComponent);
+    const bottomSheetRef = this.bottomSheet.open(ProviderComponent);
+    bottomSheetRef.instance.providerUpdated.subscribe(() => {
+      this.updateProductsList();
+    });
   }
 
   getProviderNameById(id: number) {

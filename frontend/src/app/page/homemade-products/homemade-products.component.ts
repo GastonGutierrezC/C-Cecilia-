@@ -37,6 +37,7 @@ import {
 import {ProductIngredientService} from '../../service/product-ingredient-service';
 import {EditHomemadeProductComponent} from '../../dialog/edit-homemade-product/edit-homemade-product.component';
 import {MatDivider} from '@angular/material/divider';
+import { SuccessDialogComponent } from '../../dialog/success-dialog/success-dialog.component';
 @Component({
   selector: 'app-homemade-products',
   imports: [
@@ -77,7 +78,7 @@ import {MatDivider} from '@angular/material/divider';
   styleUrl: './homemade-products.component.scss'
 })
 export class HomemadeProductsComponent implements OnInit, AfterViewInit{
-  onCreationMode = true
+  onCreationMode = false
   tableView = true
   columns: string[] = ['name', 'inPrice', 'sellPrice', 'quantity', 'delete', 'edit']
   productsDataSource: MatTableDataSource<HomeMadeProductContentModel> = new MatTableDataSource<HomeMadeProductContentModel>();
@@ -177,34 +178,60 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
           providerId:1
         },
         ingredients: this.newProductIngredients
-      }).subscribe(res => {
-        this.homemadeProductService.getProducts().subscribe(products => {
-          this.products = products;
+      }).subscribe({
+        next: (res) => {
+          this.dialog.open(SuccessDialogComponent, {
+            data: {
+              title: '¡Producto creado!',
+              message: `El producto "${this.productForm.value.name}" se creó correctamente`,
+              icon: 'check_circle',
+              buttonText: 'Aceptar'
+            }
+          });
+
+          this.productForm.reset({
+            inPrice: 0,
+            sellPrice: 0
+          });
           this.fileName = undefined;
           this.image64 = undefined;
-          this.filteredProducts = products;
-          this.productsDataSource = new MatTableDataSource(products)
+          this.newProductIngredients = [];
+          this.newProductIngredientsChips.set([]);
 
-          this.productsDataSource.paginator = this.paginator()
-          this.productsDataSource.sort = this.sort()
-        })
+          this.updateProductsList();
+        },
+        error: (err) => {
+          console.error('Error al crear producto:', err);
+        }
+
       })
     }
+  }
+
+
+  private updateProductsList() {
+    this.homemadeProductService.getProducts().subscribe(products => {
+      this.products = products;
+      this.filteredProducts = products;
+      this.productsDataSource = new MatTableDataSource(products);
+      this.productsDataSource.paginator = this.paginator();
+      this.productsDataSource.sort = this.sort();
+    });
+
+    this.ingredientService.getIngredients().subscribe(ingredients => {
+      this.ingredients = ingredients;
+      this.filteredIngredients = ingredients;
+    });
   }
 
   deleteProduct(id: number) {
     this.dialog.open(ConfirmationDialogComponent, {
     }).afterClosed().subscribe((result: boolean) => {
       if (result) {
-        this.homemadeProductService.deleteProduct(id).subscribe(res => {
-          this.homemadeProductService.getProducts().subscribe(products => {
-            this.productsDataSource = new MatTableDataSource(products);
-            this.products = products;
-            this.filteredProducts = products;
-            this.productsDataSource.paginator = this.paginator()
-            this.productsDataSource.sort = this.sort()
-          })
-        })
+        this.homemadeProductService.deleteProduct(id).subscribe({
+          next: () => this.updateProductsList(),
+          error: (err) => console.error('Error al eliminar:', err)
+        });
       }
     })
   }
@@ -215,14 +242,11 @@ export class HomemadeProductsComponent implements OnInit, AfterViewInit{
     }).afterClosed().subscribe({
       next: (res: boolean) => {
         if (res) {
-          this.homemadeProductService.getProducts().subscribe(products => {
-            this.products = products;
-            this.filteredProducts = products;
-            this.productsDataSource = new MatTableDataSource(products);
-            this.productsDataSource.paginator = this.paginator()
-            this.productsDataSource.sort = this.sort()
-          })
+          this.updateProductsList();
         }
+      },
+        error: (err) => {
+        console.error('Error al editar producto:', err);
       }
     })
   }

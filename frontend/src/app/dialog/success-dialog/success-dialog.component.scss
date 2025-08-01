@@ -1,0 +1,58 @@
+@use '../../../styles' as styles;
+
+.success-dialog-container {
+  padding: 24px;
+  border-radius: 8px;
+  background: styles.$secondary;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+  .success-dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    .success-icon {
+      color: styles.$primary;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+
+    .success-title {
+      margin: 0;
+      color: styles.$tertiary;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+
+  .success-dialog-content {
+    margin-bottom: 24px;
+
+    p {
+      margin: 0;
+      color: styles.$tertiary;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+  }
+
+  .success-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    .success-button {
+      padding: 8px 24px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background-color: styles.$primary;
+      color: white;
+
+      &:hover {
+        background-color: darken(styles.$primary, 10%);
+      }
+    }
+  }
+}
